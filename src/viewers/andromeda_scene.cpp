@@ -21,6 +21,8 @@ void AScene::init()
     grid_pen_.setCapStyle(Qt::RoundCap);
     grid_pen_.setJoinStyle(Qt::RoundJoin);
     grid_pen_.setCosmetic(true);
+
+    setMinimumRenderSize(0.01);
 }
 
 void AScene::setLayerDisplayMode(int mode)

@@ -7,3 +7,4 @@ debug/
 **.autosave
 *.user
 **.cpp.*
+ui_**.h

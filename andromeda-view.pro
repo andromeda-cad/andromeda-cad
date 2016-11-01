@@ -6,9 +6,9 @@
 
 QT       += core gui
 
-CONFIG += c++11
+qtHaveModule(opengl): QT += opengl
 
-QT_FLUSH_PAINT = 100
+CONFIG += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

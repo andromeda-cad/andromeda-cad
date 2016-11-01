@@ -493,6 +493,7 @@ void AView::paintEvent(QPaintEvent *event)
 
     // Draw repaint time
 #ifdef REDRAW_TIMER
+    painter.fillRect(QRectF(0,0,100,20), QColor(255,255,255));
     painter.drawText(QRectF(0,0,100,20), QString::number(elapsed) + "ms");
 #endif
 }
