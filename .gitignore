@@ -1,0 +1,10 @@
+*.o
+Makefile*
+release/
+debug/
+*.Release
+*.Debug
+**.autosave
+*.user
+**.cpp.*
+ui_**.h
