@@ -20,14 +20,24 @@ SymbolEditorView::SymbolEditorView(QWidget *parent) : AView(parent)
 
     setCacheMode(QGraphicsView::CacheBackground);
 
+    addItems();
+}
+
+void SymbolEditorView::addItems()
+{
+
 //#define TEST_TEXT
 //#define TEST_ELLIPSE
-//#define TEST_RECT
+#define TEST_RECT
 
     AEllipse *ellipse;
     ATextItem *text;
     APolyline *rect;
 
+
+    QElapsedTimer t;
+
+    t.start();
 
     for (int i=-100; i<100; i+=2)
     {
@@ -64,6 +74,8 @@ SymbolEditorView::SymbolEditorView(QWidget *parent) : AView(parent)
 #endif
         }
     }
+
+    qDebug() << "Adding items took" << t.elapsed() << "ms";
 }
 
 void SymbolEditorView::keyPressEvent(QKeyEvent *event)
@@ -74,6 +86,10 @@ void SymbolEditorView::keyPressEvent(QKeyEvent *event)
 
     ATextItem *text;
 
+    QElapsedTimer t;
+
+    t.start();
+
     if (isToolActive())
     {
         sendKeyEventToTool(event);
@@ -83,6 +99,14 @@ void SymbolEditorView::keyPressEvent(QKeyEvent *event)
         // Tool activation keys
         switch (event->key())
         {
+        case Qt::Key_Q:
+            scene_->clear();
+
+            qDebug() << "Clear scene took" << t.elapsed() << "ms";
+            break;
+        case Qt::Key_N:
+            addItems();
+            break;
         case Qt::Key_X: // Delete
             deleteSelectedItems();
             break;

@@ -15,6 +15,8 @@
 APolyline::APolyline(QObject *parent) : ADrawablePrimitive(parent)
 {
     setObjectName(OBJECT_NAME::A_DRAWABLE_POLYLINE);
+
+    //setCacheMode(QGraphicsItem::ItemCoordinateCache);
 }
 
 void APolyline::encode(AJsonObject &data, bool hideDefaults) const

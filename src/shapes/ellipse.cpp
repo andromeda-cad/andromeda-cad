@@ -5,6 +5,8 @@
 AEllipse::AEllipse(QObject *parent) : ADrawablePrimitive(parent)
 {
     setObjectName(OBJECT_NAME::A_DRAWABLE_ELLIPSE);
+
+    setRadius(0);
 }
 
 void AEllipse::decode(AJsonObject &data, bool undoable)
@@ -49,16 +51,7 @@ void AEllipse::encode(AJsonObject &data, bool hideDefaults) const
 
 QRectF AEllipse::boundingRect() const
 {
-    QRectF rect(-rx_, -ry_, 2*rx_, 2*ry_);
-
-    double offset = line_width_ / 2;
-
-    rect.adjust(-offset,
-                -offset,
-                 offset,
-                 offset);
-
-    return rect;
+    return bb_;
 }
 
 QPainterPath AEllipse::shape() const
@@ -79,7 +72,7 @@ void AEllipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     painter->drawEllipse(QPointF(0,0), rx_, ry_);
 
-    if (draw_bounding_box_)
+    //if (draw_bounding_box_)
         drawBoundingBox(painter);
 
 }
@@ -96,6 +89,14 @@ void AEllipse::setRadius(double rx, double ry)
 
     if (ry != 0)
         ry_ = qFabs(ry);
+
+    bb_.setTopLeft(QPointF(-rx/2, -ry/2));
+    bb_.setWidth(rx);
+    bb_.setHeight(ry);
+
+    double o = line_width_;
+
+    bb_.adjust(-o,-o,o,o);
 
     prepareGeometryChange();
 

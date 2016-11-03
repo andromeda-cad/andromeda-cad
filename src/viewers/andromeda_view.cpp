@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QTime>
 
+#include <QProgressDialog>
+
 #include "src/grid/grid.h"
 
 
@@ -31,6 +33,8 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
     setScene(new AScene());
 
     connect(scene_, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
+
+    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 }
 
 void AView::setScene(AScene *scene)
@@ -44,18 +48,52 @@ void AView::deleteItems(QList<QGraphicsItem *> items)
 {
     if (nullptr == scene_) return;
 
-    foreach (QGraphicsItem* item, items)
+    QProgressDialog dlg;
+
+    dlg.setMinimum(0);
+    dlg.setMaximum(items.count()/100);
+
+    dlg.setWindowTitle("Deleting " + QString::number(items.count()) + " items");
+
+    //dlg.show();
+
+    scene_->blockSignals(true);
+    blockSignals(true);
+
+    QElapsedTimer t;
+
+    t.start();
+
+    int count = 0;
+
+    for (int i=0;i<items.count();i++)
     {
-        // NULL ptr
-        if (nullptr == item) continue;
+        if (items[i] == nullptr) continue;
 
-        // Item is NOT in the scene
-        if (item->scene() != scene_) continue;
+        if (items[i]->scene() != scene_) continue;
 
-        scene_->removeItem(item);
+        //items[i]->setSelected(false);
+
+        scene_->removeItem(items[i]);
+
+
+        count = (count + 1) % 100;
+
+        if (count == 0)
+        {
+            //dlg.setValue(dlg.value()+1);
+            //QApplication::processEvents();
+        }
     }
 
-    scene_->update();
+    //dlg.cancel();
+
+    scene_->blockSignals(false);
+    blockSignals(false);
+
+    update();
+
+    qDebug() << "Deleting" << items.count() << "items took" << t.elapsed() << "ms";
 }
 
 void AView::deleteSelectedItems()
@@ -114,11 +152,25 @@ void AView::setCursorPos(QPointF pos, bool panPastEdges)
         scroll(dx,dy);
     }
 
+    // Update old cursor pos
+    scene_->update(cursor_pos_.x() - 25,
+                   cursor_pos_.y() - 25,
+                   50,
+                   50);
+
     cursor_pos_ = pos;
+
+
 
     emit cursorPositionChanged(cursor_pos_);
 
-    getScene()->update();
+    // Repaint only the part of the scene where the
+    //getScene()->update();
+
+    scene_->update(cursor_pos_.x() - 25,
+                   cursor_pos_.y() - 25,
+                   50,
+                   50);
 }
 
 void AView::moveCursor(QPointF offset, bool panPastEdges)
@@ -482,8 +534,8 @@ void AView::paintEvent(QPaintEvent *event)
 
     //TODO - draw a different cursor if the user is using a tool or just navigating
     // Draw the cursor
-    if (isToolActive())
-        drawCursor(&painter, event->rect());
+    //if (isToolActive())
+    drawCursor(&painter, event->rect());
 
     // Draw the overlay
     if (checkViewFlags(VIEW_FLAG_DRAW_OVERLAY))
@@ -493,8 +545,8 @@ void AView::paintEvent(QPaintEvent *event)
 
     // Draw repaint time
 #ifdef REDRAW_TIMER
-    painter.fillRect(QRectF(0,0,100,20), QColor(255,255,255));
-    painter.drawText(QRectF(0,0,100,20), QString::number(elapsed) + "ms");
+    painter.fillRect(QRectF(0,0,50,20), QColor(255,255,200));
+    painter.drawText(QRectF(0,0,50,20), QString::number(elapsed) + "ms");
 #endif
 }
 
@@ -820,8 +872,14 @@ void AView::finishSelection()
         // Rectangular selection
         if (validSelection)
         {
+            QElapsedTimer t;
+
+            t.start();
 
             QList<QGraphicsItem*> items;
+
+            scene_->blockSignals(true);
+            blockSignals(true);
 
             // Selection drawn left-to-right requires full selection
             if (selection.width() > 0)
@@ -845,14 +903,19 @@ void AView::finishSelection()
                 scene_->clearSelection();
             }
 
-            foreach (QGraphicsItem *item, items)
+            for (int i=0;i<items.count();i++)
             {
-                if (nullptr == item) continue;
+                if (items[i] == nullptr) continue;
 
-                item->setSelected(select);
+                items[i]->setSelected(select);
             }
 
-            scene_->update();
+            scene_->blockSignals(false);
+            blockSignals(false);
+
+            update();
+
+            qDebug() << "Selecting" << items.count() << "items took" << t.elapsed() << "ms";
         }
         // Point Selection
         else
