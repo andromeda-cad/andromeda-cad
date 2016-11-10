@@ -36,7 +36,16 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
 
     connect(scene_, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
 
-    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+    QGLFormat fmt;
+
+    fmt.setAlpha(true);
+    fmt.setDoubleBuffer(true);
+    fmt.setSampleBuffers(true);
+    fmt.setDirectRendering(false);
+
+    setViewport(new QGLWidget(fmt));
+
+    setViewportUpdateMode(SmartViewportUpdate);
 }
 
 void AView::setScene(AScene *scene)
