@@ -24,6 +24,8 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
 
     setDragMode(QGraphicsView::RubberBandDrag);
 
+    setCacheMode(CacheBackground);
+
     setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing);
     //setOptimizationFlags(QGraphicsView::DontSavePainterState);
     //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
