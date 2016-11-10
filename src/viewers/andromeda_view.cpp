@@ -28,6 +28,8 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
 
     setCacheMode(CacheBackground);
 
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
     setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing);
     //setOptimizationFlags(QGraphicsView::DontSavePainterState);
     //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
@@ -584,7 +586,12 @@ void AView::paintEvent(QPaintEvent *event)
 
     QGraphicsView::paintEvent(event);
 
-    qDebug() << QString::number((double) t.nsecsElapsed() / 1000 / 1000, 'f', 3) + "ms";
+    QString time = QString::number((double) t.nsecsElapsed() / 1000 / 1000, 'f', 3) + "ms";
+
+    QString dims = QString(" (") + QString::number(event->rect().width()) + ", " + QString::number(event->rect().height()) + QString(")");
+
+    qDebug() << time + dims;
+
     paint_mutex_.unlock();
 }
 
