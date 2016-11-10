@@ -584,8 +584,7 @@ void AView::paintEvent(QPaintEvent *event)
 
     QGraphicsView::paintEvent(event);
 
-    qDebug() << t.elapsed();
-
+    qDebug() << QString::number((double) t.nsecsElapsed() / 1000 / 1000, 'f', 3) + "ms";
     paint_mutex_.unlock();
 }
 
