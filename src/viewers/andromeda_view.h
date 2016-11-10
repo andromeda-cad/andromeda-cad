@@ -31,6 +31,9 @@ public:
     void setScene(AScene *scene);
     AScene* getScene(void) { return scene_; }
 
+    QRectF mapRectToScene(QRect rect);
+    QRect mapRectFromScene(QRectF rect);
+
     //TODO make these slots
 
     // Viewport functions
@@ -105,20 +108,19 @@ signals:
 
 protected:
     // UI event callbacks
-    void wheelEvent(QWheelEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
-    void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
     void paintEvent(QPaintEvent *event) override;
 
     // Painting functions (drawn in scene coordinates)
-    //void drawBackground(QPainter *painter, const QRectF &rect);
-    void drawForeground(QPainter *painter, const QRectF &rect);
+    void drawForeground(QPainter *painter, const QRectF &rect) override;
     void drawSelectionMarquee(QPainter *painter, const QRectF &rect);
 
     // Overlay functions (drawn in viewport coordinates)

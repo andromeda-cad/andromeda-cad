@@ -45,7 +45,7 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
 
 void AView::toggleViewportMode()
 {
-    static bool mode = false;
+    static bool mode = true;
 
     mode = !mode;
 
@@ -77,6 +77,22 @@ void AView::setScene(AScene *scene)
     scene_ = scene;
 
     QGraphicsView::setScene(scene);
+}
+
+QRect AView::mapRectFromScene(QRectF rect)
+{
+    QPoint tl = mapFromScene(rect.topLeft());
+    QPoint br = mapFromScene(rect.bottomRight());
+
+    return QRect(tl, br);
+}
+
+QRectF AView::mapRectToScene(QRect rect)
+{
+    QPointF tl = mapToScene(rect.topLeft());
+    QPointF br = mapToScene(rect.bottomRight());
+
+    return QRectF(tl, br);
 }
 
 void AView::deleteItems(QList<QGraphicsItem *> items)
@@ -187,25 +203,21 @@ void AView::setCursorPos(QPointF pos, bool panPastEdges)
         scroll(dx,dy);
     }
 
-    // Update old cursor pos
-    scene_->update(cursor_pos_.x() - 25,
-                   cursor_pos_.y() - 25,
-                   50,
-                   50);
+    QPoint screen_pos = mapFromScene(cursor_pos_);
 
+    // Update old cursor pos
+    QRectF invalid = mapRectToScene(QRect(
+                   screen_pos.x() - 12,
+                   screen_pos.y() - 12,
+                   24,
+                   24));
+
+    scene_->update(invalid);
+
+    // Set new cursor pos
     cursor_pos_ = pos;
 
-
-
     emit cursorPositionChanged(cursor_pos_);
-
-    // Repaint only the part of the scene where the
-    //getScene()->update();
-
-    scene_->update(cursor_pos_.x() - 25,
-                   cursor_pos_.y() - 25,
-                   50,
-                   50);
 }
 
 void AView::moveCursor(QPointF offset, bool panPastEdges)
