@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QTime>
 
+#include <QPainter>
+
 #include <QProgressDialog>
 
 #include "src/grid/grid.h"
@@ -36,16 +38,36 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
 
     connect(scene_, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
 
-    QGLFormat fmt;
+    toggleViewportMode();
+}
 
-    fmt.setAlpha(true);
-    fmt.setDoubleBuffer(true);
-    fmt.setSampleBuffers(true);
-    fmt.setDirectRendering(false);
+void AView::toggleViewportMode()
+{
+    static bool mode = false;
 
-    setViewport(new QGLWidget(fmt));
+    mode = !mode;
 
-    setViewportUpdateMode(SmartViewportUpdate);
+    if (mode) // OpenGL mode
+    {
+        QGLFormat fmt;
+
+        fmt.setAlpha(true);
+        fmt.setDoubleBuffer(true);
+        fmt.setSampleBuffers(true);
+        fmt.setDirectRendering(false);
+        fmt.setProfile(QGLFormat::OpenGLContextProfile::CompatibilityProfile);
+
+        setViewport( new QGLWidget(fmt) );
+
+        qDebug() << "OpenGL";
+    }
+    else
+    {
+        setViewport(new QWidget());
+        setViewportUpdateMode(SmartViewportUpdate);
+
+        qDebug() << "Raster";
+    }
 }
 
 void AView::setScene(AScene *scene)
@@ -256,6 +278,9 @@ void AView::keyPressEvent(QKeyEvent *event)
 
     switch (event->key())
     {
+    case Qt::Key_M:
+        toggleViewportMode();
+        break;
     case Qt::Key_Escape:
         if (selection_active_)
             cancelSelection();
@@ -402,6 +427,8 @@ void AView::mouseReleaseEvent(QMouseEvent *event)
     else if (selection_active_ && event->button() == Qt::LeftButton)
     {
         finishSelection();
+
+        update();
     }
     else
     {
@@ -488,6 +515,25 @@ void AView::drawForeground(QPainter *painter, const QRectF &rect)
     {
         drawSelectionMarquee(painter, rect);
     }
+
+    // Draw the cursor
+    painter->save();
+    painter->resetTransform();
+    QPoint pos = mapFromScene(cursor_pos_);
+
+    QPoint dx(10, 0);
+    QPoint dy(0, 10);
+
+    QPen pen;
+    pen.setWidth(2);
+    pen.setColor(QColor(150,200,50));
+
+    painter->drawLine(pos - dx, pos + dx);
+    painter->drawLine(pos - dy, pos + dy);
+
+    painter->fillRect(pos.x() - 10, pos.y() - 10, 20, 20, QColor(100, 100, 100, 100));
+
+    painter->restore();
 }
 
 void AView::drawSelectionMarquee(QPainter *painter, const QRectF &rect)
@@ -526,39 +572,21 @@ QRectF AView::getSelectionMarquee()
                   cursor_pos_.y() - startPos_.y());
 }
 
+
 void AView::paintEvent(QPaintEvent *event)
 {
-#define REDRAW_TIMER
+    if (!paint_mutex_.tryLock(10))
+        return;
 
-    if (nullptr == event) return;
+    static QElapsedTimer t;
 
-    QTime time;
-    time.start();
+    t.start();
 
-    // First perform scene painting
     QGraphicsView::paintEvent(event);
 
-    int elapsed = time.elapsed();
+    qDebug() << t.elapsed();
 
-    // Grab the painter
-    QPainter painter(viewport());
-
-    //TODO - draw a different cursor if the user is using a tool or just navigating
-    // Draw the cursor
-    //if (isToolActive())
-    drawCursor(&painter, event->rect());
-
-    // Draw the overlay
-    if (checkViewFlags(VIEW_FLAG_DRAW_OVERLAY))
-        drawOverlay(&painter, event->rect());
-
-    painter.setPen(QPen(QColor(255,0,255)));
-
-    // Draw repaint time
-#ifdef REDRAW_TIMER
-    painter.fillRect(QRectF(0,0,50,20), QColor(255,255,200));
-    painter.drawText(QRectF(0,0,50,20), QString::number(elapsed) + "ms");
-#endif
+    paint_mutex_.unlock();
 }
 
 void AView::drawOverlay(QPainter *painter, QRect rect)
@@ -950,9 +978,10 @@ void AView::finishSelection()
                 item->setSelected(true);
             }
 
-            scene_->update();
         }
 
         cancelSelection();
     }
+
+    update();
 }

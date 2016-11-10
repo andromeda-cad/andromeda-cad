@@ -14,6 +14,10 @@
 
 #include <QtOpenGL>
 
+#include <QElapsedTimer>
+
+#include <QMutex>
+
 #define ANDROMEDA_VIEW_MAX_SCALING 100.0f
 #define ANDROMEDA_VIEW_MIN_SCALING 0.001f
 
@@ -110,7 +114,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
 
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event) override;
 
     // Painting functions (drawn in scene coordinates)
     //void drawBackground(QPainter *painter, const QRectF &rect);
@@ -155,7 +159,10 @@ protected:
     void finishSelection();
     void cancelSelection();
 
+    void toggleViewportMode(void);
+
 private:
+    QMutex paint_mutex_;
 };
 
 #endif // ANDROMEDA_VIEW_H
