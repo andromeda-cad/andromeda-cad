@@ -139,9 +139,9 @@ QStringList AndromedaObject::getPropertyNames()
 
     QStringList names;
 
-    foreach (QMetaProperty p, props)
+    for (int i=0;i<props.count();i++)
     {
-        names.append(QString::fromUtf8(p.name()));
+        names.append(QString::fromUtf8(props[i].name()));
     }
 
     return names;

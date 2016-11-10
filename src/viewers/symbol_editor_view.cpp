@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QLineF>
 
+#include <QGraphicsTextItem>
+
 #include "src/geometry/geometry.h"
 #include "src/shapes/ellipse.h"
 #include "src/shapes/text_item.h"
@@ -26,26 +28,30 @@ SymbolEditorView::SymbolEditorView(QWidget *parent) : AView(parent)
 void SymbolEditorView::addItems()
 {
 
-//#define TEST_TEXT
-//#define TEST_ELLIPSE
+#define TEST_TEXT
+#define TEST_ELLIPSE
 #define TEST_RECT
 
     AEllipse *ellipse;
-    ATextItem *text;
+    //ATextItem *text;
     APolyline *rect;
 
+    QGraphicsTextItem *text;
 
     QElapsedTimer t;
 
     t.start();
 
-    for (int i=-100; i<100; i+=2)
+    for (int i=-200; i<200; i+=5)
     {
-        for (int j=-100; j<100; j+=2)
+        for (int j=-100; j<100; j+= 5)
         {
 #ifdef TEST_TEXT
-            text = new ATextItem();
-            text->setText("ABCDE");
+            //text = new ATextItem();
+            text = new QGraphicsTextItem();
+            text->setPlainText("ABCDE");
+            text->setFlags(QGraphicsItem::ItemIsSelectable);
+            //text->setText("ABCDE");
             text->setPos(i*15,j*15);
             scene_->addItem(text);
 #endif
@@ -62,11 +68,11 @@ void SymbolEditorView::addItems()
 
             rect->setLineWidth(2.5);
 
-            rect->addPoint(QPointF(-5,-5));
-            rect->addPoint(QPointF(5,-5));
-            rect->addPoint(QPointF(5,5));
-            rect->addPoint(QPointF(-5,5));
-            rect->addPoint(QPointF(-5,-5));
+            rect->addPoint(QPointF(-5,-10));
+            rect->addPoint(QPointF( 5,-10));
+            rect->addPoint(QPointF( 5, 10));
+            rect->addPoint(QPointF(-5, 10));
+            rect->addPoint(QPointF(-5,-10));
 
             rect->setPos(i*12, j*12);
 

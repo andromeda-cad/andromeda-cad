@@ -179,6 +179,8 @@ void APolyline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     painter->setPen(pen(option));
 
+    painter->setClipRect(option->exposedRect);
+
     // Straight line segments can't be filled
     if (pointCount() == 2)
         painter->setBrush(Qt::NoBrush);
