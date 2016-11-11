@@ -190,7 +190,7 @@ void AView::deleteItems(QList<QGraphicsItem *> items)
     scene_->blockSignals(false);
     blockSignals(false);
 
-    update();
+    scene_->update();
 
     qDebug() << "Deleting" << items.count() << "items took" << t.elapsed() << "ms";
 }
