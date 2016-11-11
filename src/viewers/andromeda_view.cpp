@@ -344,8 +344,16 @@ void AView::keyPressEvent(QKeyEvent *event)
         toggleViewportMode();
         break;
     case Qt::Key_Escape:
+        // If currently selecting, cancel the selection marquee
         if (selection_active_)
+        {
             cancelSelection();
+        }
+        // Finally
+        else
+        {
+            scene_->clearSelection();
+        }
         break;
     case Qt::Key_Space:
         // Center the screen at the cursor location
@@ -1043,5 +1051,5 @@ void AView::finishSelection()
         cancelSelection();
     }
 
-    update();
+    scene_->update();
 }
