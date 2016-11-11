@@ -17,6 +17,7 @@ public:
 
 public slots:
     void cursorPosChanged(QPointF pos);
+    void updateStats(QString stats);
 
     void selectionChanged();
 

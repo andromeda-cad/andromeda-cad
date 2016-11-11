@@ -51,15 +51,15 @@ void AView::toggleViewportMode()
 
     if (mode) // OpenGL mode
     {
-        QGLFormat fmt;
+        QOpenGLWidget *gl = new QOpenGLWidget(this);
 
-        fmt.setAlpha(true);
-        fmt.setDoubleBuffer(true);
-        fmt.setSampleBuffers(true);
-        fmt.setDirectRendering(false);
-        fmt.setProfile(QGLFormat::OpenGLContextProfile::CompatibilityProfile);
+        QSurfaceFormat format;
 
-        setViewport( new QGLWidget(fmt) );
+        format.setSamples(4);
+
+        gl->setFormat(format);
+
+        setViewport( gl );
 
         qDebug() << "OpenGL";
     }
@@ -501,13 +501,6 @@ void AView::endMousePan()
     setCursor(QCursor(Qt::ArrowCursor));
 }
 
-/*
-void AView::drawBackground(QPainter *painter, const QRectF &rect)
-{
-
-}
-*/
-
 /**
  * @brief AView::drawForeground
  * Custom foreground painting (AFTER the scene is painted)
@@ -589,6 +582,7 @@ QRectF AView::getSelectionMarquee()
 
 void AView::paintEvent(QPaintEvent *event)
 {
+    // Don't double render
     if (!paint_mutex_.tryLock(10))
         return;
 
@@ -602,7 +596,7 @@ void AView::paintEvent(QPaintEvent *event)
 
     QString dims = QString(" (") + QString::number(event->rect().width()) + ", " + QString::number(event->rect().height()) + QString(")");
 
-    qDebug() << time + dims;
+    emit updateStats(time + dims);
 
     paint_mutex_.unlock();
 }

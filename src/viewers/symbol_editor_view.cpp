@@ -53,6 +53,7 @@ void SymbolEditorView::addItems()
             text->setFlags(QGraphicsItem::ItemIsSelectable);
             //text->setText("ABCDE");
             text->setPos(i*15,j*15);
+            text->setZValue(3);
             scene_->addItem(text);
 #endif
 #ifdef TEST_ELLIPSE
@@ -60,6 +61,7 @@ void SymbolEditorView::addItems()
             ellipse->setRadius(5,5);
             ellipse->setLineWidth(5);
             ellipse->setPos(i*10,j*10);
+            ellipse->setZValue(1);
             scene_->addItem(ellipse);
 #endif
 
@@ -75,7 +77,7 @@ void SymbolEditorView::addItems()
             rect->addPoint(QPointF(-5,-10));
 
             rect->setPos(i*12, j*12);
-
+            rect->setZValue(2);
             scene_->addItem(rect);
 #endif
         }

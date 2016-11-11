@@ -105,6 +105,7 @@ public slots:
 signals:
     // Called when the user cursor changes (in scene coordinates)
     void cursorPositionChanged(QPointF pos);
+    void updateStats( QString stats );
 
 protected:
     // UI event callbacks
