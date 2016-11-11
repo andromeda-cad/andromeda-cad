@@ -17,7 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->graphicsView->setInteractive(true);
 
-    ui->graphicsView->getScene()->setSceneRect(-1000,-1000,2000,2000);
+    ui->graphicsView->getScene()->setSceneRect(-5000,-5000,10000,10000);
+
+    ui->graphicsView->setSceneRect(ui->graphicsView->getScene()->sceneRect());
 
     // Uncomment to set dark background
     //ui->graphicsView->getScene()->setBackgroundColor(QColor(25,25,25));
