@@ -8,6 +8,8 @@
 #include <QPaintEvent>
 #include <QCursor>
 
+#include <QShortcut>
+
 #include "src/tools/tool_base.h"
 
 #include "andromeda_scene.h"
@@ -38,7 +40,7 @@ public:
 
     // Viewport functions
     QPointF getCenterLocation(void);
-    QRectF getViewport(void);
+    QRectF getViewBounds(void);
     QPointF unitsPerPixel(void);
 
     // Cursor functions
@@ -100,6 +102,8 @@ public slots:
     void toolFinished(void);
     void toolCancelled(void);
 
+    // Selection functions
+    virtual void selectAll(int filter = 0);
     virtual void onSelectionChanged(void) {}
 
 signals:
@@ -163,6 +167,11 @@ protected:
     void cancelSelection();
 
     void toggleViewportMode(void);
+
+    // Keyboard shortcuts
+    QShortcut *m_shortcut_select_all;
+
+    virtual void configureShortcuts( void );
 
 private:
     QMutex paint_mutex_;

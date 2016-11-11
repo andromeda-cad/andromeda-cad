@@ -41,6 +41,17 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
     connect(scene_, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
 
     toggleViewportMode();
+
+    configureShortcuts();
+}
+
+void AView::configureShortcuts()
+{
+    m_shortcut_select_all = new QShortcut(QKeySequence("Ctrl+A"), this);
+    m_shortcut_select_all->setAutoRepeat(false);
+    m_shortcut_select_all->setEnabled(true);
+
+    connect(m_shortcut_select_all, SIGNAL(activated()), this, SLOT(selectAll()));
 }
 
 void AView::toggleViewportMode()
@@ -60,6 +71,7 @@ void AView::toggleViewportMode()
         gl->setFormat(format);
 
         setViewport( gl );
+        setViewportUpdateMode(FullViewportUpdate);
 
         qDebug() << "OpenGL";
     }
@@ -77,6 +89,42 @@ void AView::setScene(AScene *scene)
     scene_ = scene;
 
     QGraphicsView::setScene(scene);
+}
+
+/*
+ * Select all items
+ */
+void AView::selectAll(int filter)
+{
+    Q_UNUSED(filter);
+
+    QList<QGraphicsItem*> items;
+
+    QGraphicsItem *item;
+
+    items = scene_->items();
+
+    qDebug() << "Select All:" << items.count();
+
+    // Alt key allows only visible items selected
+    bool alt = (QApplication::keyboardModifiers() & Qt::AltModifier);
+
+    QRectF bounds = getViewBounds();
+
+    // Stop scene from emitting selectionChanged
+    scene_->blockSignals(true);
+
+    for (int i=0; i<items.count(); i++)
+    {
+        item = items.at(i);
+
+        if ( nullptr == item ) continue;
+
+        // Select item if ALT is not pressed OR it is visible
+        item->setSelected( !alt || bounds.contains(item->boundingRect() ) );
+    }
+
+    scene_->blockSignals(false);
 }
 
 QRect AView::mapRectFromScene(QRectF rect)
@@ -185,7 +233,7 @@ void AView::setCursorPos(QPointF pos, bool panPastEdges)
     if (panPastEdges)
     {
         // Check if the cursor has moved outside the screen bounds
-        QRectF view = getViewport();
+        QRectF view = getViewBounds();
 
         double dx = 0;
         double dy = 0;
@@ -673,7 +721,7 @@ QPointF AView::getCenterLocation()
  * @brief AView::getViewport
  * @return the viewport rectangle in scene coordinates
  */
-QRectF AView::getViewport()
+QRectF AView::getViewBounds()
 {
     return QRectF(
                 mapToScene(0,0),
@@ -687,7 +735,7 @@ QRectF AView::getViewport()
  */
 QPointF AView::unitsPerPixel()
 {
-    QRectF scene = getViewport();
+    QRectF scene = getViewBounds();
 
     return QPointF(scene.width() / width(), scene.height() / height());
 }
