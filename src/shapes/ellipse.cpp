@@ -82,6 +82,7 @@ void AEllipse::setRadius(double rx, double ry)
     // Ignore same values
     if ((rx == rx_) && (ry == ry_)) return;
 
+    //TODO - make this action undoable
     //setUndoAction(OBJ_KEY::RADIUS, );
 
     if (rx != 0)
@@ -90,11 +91,11 @@ void AEllipse::setRadius(double rx, double ry)
     if (ry != 0)
         ry_ = qFabs(ry);
 
-    bb_.setTopLeft(QPointF(-rx/2, -ry/2));
-    bb_.setWidth(rx);
-    bb_.setHeight(ry);
+    bb_.setTopLeft(QPointF(-rx, -ry));
+    bb_.setWidth(rx * 2);
+    bb_.setHeight(ry * 2);
 
-    double o = line_width_;
+    double o = line_width_ / 2;
 
     bb_.adjust(-o,-o,o,o);
 
