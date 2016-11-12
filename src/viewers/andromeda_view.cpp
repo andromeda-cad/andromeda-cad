@@ -395,9 +395,12 @@ void AView::keyPressEvent(QKeyEvent *event)
     }
 
     // Forward the event through to the selected tool
-    sendKeyEventToTool(event);
+    if ( isToolActive() )
+    {
+        sendKeyEventToTool( event );
+    }
 
-    switch (event->key())
+    switch ( event->key() )
     {
 
     case Qt::Key_C: //TODO - remove this, just a test
@@ -416,13 +419,16 @@ void AView::keyPressEvent(QKeyEvent *event)
     }
     else
     {
-        QGraphicsView::keyPressEvent(event);
+        QGraphicsView::keyPressEvent( event );
     }
 }
 
 void AView::keyReleaseEvent(QKeyEvent *event)
 {
-    sendKeyEventToTool(event);
+    if ( isToolActive() )
+    {
+        sendKeyEventToTool( event );
+    }
 
     QGraphicsView::keyReleaseEvent(event);
 }
@@ -466,7 +472,10 @@ void AView::mousePressEvent(QMouseEvent *event)
 
     setCursorPos( scenePos );
 
-    sendMouseEventToTool( event );
+    if ( isToolActive() )
+    {
+        sendMouseEventToTool( event );
+    }
 
     switch ( event->button() )
     {
@@ -484,7 +493,10 @@ void AView::mousePressEvent(QMouseEvent *event)
 
 void AView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    sendMouseEventToTool( event );
+    if ( isToolActive() )
+    {
+        sendMouseEventToTool( event );
+    }
 }
 
 void AView::mouseReleaseEvent(QMouseEvent *event)
@@ -509,7 +521,7 @@ void AView::mouseReleaseEvent(QMouseEvent *event)
 
         update();
     }
-    else
+    else if ( isToolActive() )
     {
         sendMouseEventToTool(event);
     }
@@ -556,7 +568,10 @@ void AView::mouseMoveEvent(QMouseEvent *event)
     endMousePan();
 
     // Forward the event through to the active tool
-    sendMouseEventToTool(event);
+    if ( isToolActive() )
+    {
+        sendMouseEventToTool(event);
+    }
 
     QGraphicsView::mouseMoveEvent(event);
 }
