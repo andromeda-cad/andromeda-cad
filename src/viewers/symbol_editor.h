@@ -1,5 +1,5 @@
-#ifndef SYMBOL_EDITOR_VIEW_H
-#define SYMBOL_EDITOR_VIEW_H
+#ifndef SYMBOL_EDITOR_H
+#define SYMBOL_EDITOR_H
 
 #include "src/shapes/polyline.h"
 #include "src/shapes/ellipse.h"
@@ -11,14 +11,14 @@
 
 #include "src/symbol/schematic_symbol.h"
 
-#include "andromeda_view.h"
+#include "symbol_viewer.h"
 
-class SymbolEditorView : public AView
+class ASymbolEditor : public ASymbolViewer
 {
     Q_OBJECT
 
 public:
-    SymbolEditorView(QWidget * parent = 0);
+    ASymbolEditor(QWidget * parent = 0);
 
     void addItems(void);
 
@@ -46,5 +46,5 @@ protected:
     ASchematicSymbol symbol_;
 };
 
-#endif // SYMBOL_EDITOR_VIEW_H
+#endif // SYMBOL_EDITOR_H
 

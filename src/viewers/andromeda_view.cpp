@@ -574,7 +574,7 @@ void AView::drawForeground(QPainter *painter, const QRectF &rect)
         current_tool_->paint(painter, rect);
     }
 
-    else if (selection_active_)
+    else if (selection_enabled_ && selection_active_)
     {
         drawSelectionMarquee(painter, rect);
     }
@@ -954,6 +954,8 @@ void AView::setCursorStyle(unsigned char style)
 
 void AView::startSelection()
 {
+    if ( !selection_enabled_ ) return;
+
     selection_active_ = true;
 }
 
@@ -964,7 +966,7 @@ void AView::cancelSelection()
 
 void AView::finishSelection()
 {
-    if (selection_active_)
+    if ( selection_enabled_ && selection_active_ )
     {
         int mods = (int) QApplication::keyboardModifiers();
 

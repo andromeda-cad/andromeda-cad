@@ -9,23 +9,22 @@
 #include "src/shapes/text_item.h"
 #include "src/symbol/symbol_pin.h"
 
-#include "symbol_editor_view.h"
+#include "symbol_editor.h"
 
-SymbolEditorView::SymbolEditorView(QWidget *parent) : AView(parent)
+ASymbolEditor::ASymbolEditor(QWidget *parent) : ASymbolViewer(parent)
 {
     addTool(&poly_tool_);
     addTool(&rect_tool_);
     addTool(&ellipse_tool_);
     addTool(&pin_tool_);
 
-    scene_->addItem(&symbol_);
-
-    setCacheMode(QGraphicsView::CacheBackground);
-
     addItems();
+
+    // Enable selection
+    selection_enabled_ = true;
 }
 
-void SymbolEditorView::addItems()
+void ASymbolEditor::addItems()
 {
 
 #define TEST_TEXT
@@ -86,7 +85,7 @@ void SymbolEditorView::addItems()
     qDebug() << "Adding items took" << t.elapsed() << "ms";
 }
 
-void SymbolEditorView::keyPressEvent(QKeyEvent *event)
+void ASymbolEditor::keyPressEvent(QKeyEvent *event)
 {
     if (nullptr == event) return;
 
@@ -156,7 +155,7 @@ void SymbolEditorView::keyPressEvent(QKeyEvent *event)
 }
 
 
-void SymbolEditorView::onToolFinished(AToolBase *toolPtr)
+void ASymbolEditor::onToolFinished(AToolBase *toolPtr)
 {
     if (nullptr == toolPtr)
         return;

@@ -45,7 +45,6 @@ HEADERS += \
     src/viewers/andromeda_scene.h \
     src/viewers/andromeda_view.h \
     src/viewers/polyline_tool_base.h \
-    src/viewers/symbol_editor_view.h \
     src/mainwindow.h \
     src/symbol/schematic_symbol.h \
     src/symbol/symbol_pin.h \
@@ -61,7 +60,9 @@ HEADERS += \
     src/tools/pin_drawing_tool.h \
     src/dialogs/pin_editor.h \
     src/dialogs/object_editor.h \
-    src/shapes/text_item.h
+    src/shapes/text_item.h \
+    src/viewers/symbol_viewer.h \
+    src/viewers/symbol_editor.h
 
 SOURCES += \
     src/base/andromeda_object.cpp \
@@ -81,7 +82,6 @@ SOURCES += \
     src/tools/tool_base.cpp \
     src/viewers/andromeda_scene.cpp \
     src/viewers/andromeda_view.cpp \
-    src/viewers/symbol_editor_view.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/symbol/schematic_symbol.cpp \
@@ -96,4 +96,6 @@ SOURCES += \
     src/tools/pin_drawing_tool.cpp \
     src/dialogs/pin_editor.cpp \
     src/dialogs/object_editor.cpp \
-    src/shapes/text_item.cpp
+    src/shapes/text_item.cpp \
+    src/viewers/symbol_editor.cpp \
+    src/viewers/symbol_viewer.cpp

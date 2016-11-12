@@ -79,7 +79,7 @@
         </layout>
        </widget>
       </widget>
-      <widget class="SymbolEditorView" name="graphicsView"/>
+      <widget class="ASymbolEditor" name="graphicsView"/>
      </widget>
     </item>
     <item row="0" column="1">
@@ -197,9 +197,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>SymbolEditorView</class>
+   <class>ASymbolEditor</class>
    <extends>QGraphicsView</extends>
-   <header>src/viewers/symbol_editor_view.h</header>
+   <header>src/viewers/symbol_editor.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

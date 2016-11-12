@@ -161,6 +161,7 @@ protected:
     void endMousePan();
 
     // Selection
+    bool selection_enabled_ = false;
     bool selection_active_ = false;
     void startSelection();
     void finishSelection();
