@@ -129,8 +129,8 @@ protected:
     void drawSelectionMarquee(QPainter *painter, const QRectF &rect);
 
     // Overlay functions (drawn in viewport coordinates)
-    void drawOverlay(QPainter *painter, QRect rect);
-    void drawCursor(QPainter *painter, QRect rect);
+    virtual void drawOverlay(QPainter *painter, const QRectF &rect) const;
+    virtual void drawCursor(QPainter *painter) const;
 
     AScene *scene_;
 

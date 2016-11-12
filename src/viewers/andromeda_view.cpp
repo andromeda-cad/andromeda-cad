@@ -251,12 +251,12 @@ void AView::setCursorPos(QPointF pos, bool panPastEdges)
         scroll(dx,dy);
     }
 
-    QPoint screen_pos = mapFromScene(cursor_pos_);
+    QPoint screenPos = mapFromScene(cursor_pos_);
 
     // Update old cursor pos
     QRectF invalid = mapRectToScene(QRect(
-                   screen_pos.x() - 12,
-                   screen_pos.y() - 12,
+                   screenPos.x() - 12,
+                   screenPos.y() - 12,
                    24,
                    24));
 
@@ -580,39 +580,20 @@ void AView::endMousePan()
  */
 void AView::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    if (nullptr == painter) return;
+    if ( nullptr == painter ) return;
 
     // Draw the active tool
-    if (isToolActive())
+    if ( isToolActive() )
     {
         current_tool_->paint(painter, rect);
+
+        drawCursor( painter );
     }
 
-    else if (selection_enabled_ && selection_active_)
+    else if ( selection_enabled_ && selection_active_ )
     {
         drawSelectionMarquee( painter, rect );
     }
-
-    /*
-    // Draw the cursor
-    painter->save();
-    painter->resetTransform();
-    QPoint pos = mapFromScene(cursor_pos_);
-
-    QPoint dx(10, 0);
-    QPoint dy(0, 10);
-
-    QPen pen;
-    pen.setWidth(2);
-    pen.setColor(QColor(150,200,50));
-
-    painter->drawLine(pos - dx, pos + dx);
-    painter->drawLine(pos - dy, pos + dy);
-
-    painter->fillRect(pos.x() - 10, pos.y() - 10, 20, 20, QColor(100, 100, 100, 100));
-
-    painter->restore();
-    */
 }
 
 void AView::drawSelectionMarquee(QPainter *painter, const QRectF &rect)
@@ -662,63 +643,41 @@ void AView::paintEvent(QPaintEvent *event)
     paint_mutex_.unlock();
 }
 
-void AView::drawOverlay(QPainter *painter, QRect rect)
+/**
+ * @brief AView::drawOverlay VIRTUAL
+ * Draw an overlay over the scene
+ * Override to implement in a subclass
+ * @param painter
+ * @param rect
+ */
+void AView::drawOverlay(QPainter *painter, const QRectF &rect) const
 {
-    // Re-implement this to draw an overlayover the scene
-
-    Q_UNUSED(painter);
-    Q_UNUSED(rect);
+    Q_UNUSED( painter );
+    Q_UNUSED( rect );
 }
 
-void AView::drawCursor(QPainter *painter, QRect rect)
+void AView::drawCursor(QPainter *painter) const
 {
     if (nullptr == painter) return;
 
-    QPoint viewPos = mapFromScene(cursor_pos_);
-    int x = viewPos.x();
-    int y = viewPos.y();
+    painter->save();
+    painter->resetTransform();
 
-    QPen p;
-    p.setWidth(1);
+    QPoint pos = mapFromScene( cursor_pos_ );
 
-    painter->setPen(p);
+#define CURSOR_SIZE 10 //TODO - Make configurable?
 
-    switch (cursorStyle_)
-    {
-    default:
-    case VIEW_CURSOR_NONE:
-        return;
+    QPoint dx( CURSOR_SIZE, 0 );
+    QPoint dy( 0, CURSOR_SIZE );
 
-    // Draw a small cross at the cursor position
-    case VIEW_CURSOR_CROSS_SMALL:
-#define CURSOR 10
-        // Is the cursor position in view?
-        if ((viewPos.x() > -CURSOR) &&
-            (viewPos.x() < (width() + CURSOR)) &&
-            (viewPos.y() > -CURSOR) &&
-            (viewPos.y() < (height() + CURSOR)))
-        {
-            painter->drawLine(x-CURSOR,y,x+CURSOR,y);
-            painter->drawLine(x,y-CURSOR,x,y+CURSOR);
-        }
-        break;
+    QPen pen( QColor( 0, 0, 0 ) );
 
-    case VIEW_CURSOR_CROSS_LARGE:
+    painter->setPen( pen );
 
-        // Draw horizontal line
-        painter->drawLine(rect.left() - 1,
-                          y,
-                          rect.right() + 1,
-                          y);
+    painter->drawLine( pos - dx, pos + dx );
+    painter->drawLine( pos - dy, pos + dy );
 
-        // Draw vertical line
-        painter->drawLine(x,
-                          rect.top() - 1,
-                          x,
-                          rect.bottom() + 1);
-
-        break;
-    }
+    painter->restore();
 }
 
 /**
