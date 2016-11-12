@@ -21,6 +21,7 @@ public:
     ASymbolViewer(QWidget *parent = 0);
 
 public slots:
+    ASchematicSymbol *symbol( void ) { return &symbol_; }
 
 protected:
     // The symbol object to be displayed

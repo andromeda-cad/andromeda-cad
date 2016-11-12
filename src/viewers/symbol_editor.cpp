@@ -18,7 +18,9 @@ ASymbolEditor::ASymbolEditor(QWidget *parent) : ASymbolViewer(parent)
     addTool(&ellipse_tool_);
     addTool(&pin_tool_);
 
-    addItems();
+    // Test function to add thousands of items to the scene
+    // (to test rendering performance)
+    //addItems();
 
     // Enable selection
     selection_enabled_ = true;
