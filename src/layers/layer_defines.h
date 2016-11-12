@@ -47,9 +47,6 @@ enum class LAYER_ID : int {
     // User-facing tools draw temporary objects on the TOOLS layer
     TOOLS = 80,
 
-    // Cursor is drawn on top
-    CURSOR = 90,
-
     // Special value to force item to be insisible
     INVISIBLE = 100,
 

@@ -7,23 +7,21 @@
 #include <QKeyEvent>
 #include <QPaintEvent>
 #include <QCursor>
-#include <QShortcut>
 
-#include <QtOpenGL>
-#include <QElapsedTimer>
-#include <QMutex>
+#include <QShortcut>
 
 #include "src/tools/tool_base.h"
 
 #include "andromeda_scene.h"
-#include "cursor.h"
+
+#include <QtOpenGL>
+
+#include <QElapsedTimer>
+
+#include <QMutex>
 
 #define ANDROMEDA_VIEW_MAX_SCALING 100.0f
 #define ANDROMEDA_VIEW_MIN_SCALING 0.001f
-
-// TODO - This define is for testing only.
-// Cursor position could be configurable?
-#define CURSOR_SIZE 15
 
 class AView : public QGraphicsView
 {
@@ -46,7 +44,7 @@ public:
     QPointF unitsPerPixel(void);
 
     // Cursor functions
-    QPointF cursorPos(void) { return cursor_.pos(); }
+    QPointF cursorPos(void) { return cursor_pos_; }
     QPointF cursorOrigin(void) { return cursorOrigin_; }
     void setCursorPos(QPointF pos, bool panPastEdges = false);
     void moveCursor(QPointF offset, bool panPastEdges = false);
@@ -104,9 +102,6 @@ public slots:
     void toolFinished(void);
     void toolCancelled(void);
 
-    // Clear the scene
-    void clear( void );
-
     // Selection functions
     virtual void selectAll(int filter = 0);
     virtual void onSelectionChanged(void) {}
@@ -134,12 +129,13 @@ protected:
     void drawSelectionMarquee(QPainter *painter, const QRectF &rect);
 
     // Overlay functions (drawn in viewport coordinates)
-    void drawOverlay( QPainter *painter, QRect rect );
+    void drawOverlay(QPainter *painter, QRect rect);
+    void drawCursor(QPainter *painter, QRect rect);
 
     AScene *scene_;
 
-    ACursorItem cursor_;
     QPointF cursorOrigin_;  // 'Origin' of the cursor
+    QPointF cursor_pos_; // Current location of the cursor
     QPointF startPos_;  // Location of the 'starting' position (used for multiple functions)
 
     // Selection functions

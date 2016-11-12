@@ -84,26 +84,9 @@ void AView::toggleViewportMode()
     }
 }
 
-void AView::clear()
-{
-    if (nullptr == scene_) return;
-
-    // Delete all items from the scene
-    //scene_->clear();
-
-    // Add the cursor back in
-    scene_->addItem(&cursor_);
-}
-
 void AView::setScene(AScene *scene)
 {
     scene_ = scene;
-
-    if (nullptr != scene_)
-    {
-        // Add the cursor to the scene
-        scene_->addItem(&cursor_);
-    }
 
     QGraphicsView::setScene(scene);
 }
@@ -245,8 +228,7 @@ void AView::setCursorPos(QPointF pos, bool panPastEdges)
 
     pos = AGrid::mapToGrid(pos, QPointF(grid,grid));
 
-    // Ignore calls to set the cursor to the identical position
-    if (pos == cursor_.pos()) return;
+    if ((pos.x() == cursor_pos_.x()) && (pos.y() == cursor_pos_.y())) return;
 
     if (panPastEdges)
     {
@@ -269,14 +251,26 @@ void AView::setCursorPos(QPointF pos, bool panPastEdges)
         scroll(dx,dy);
     }
 
-    cursor_.setPos(pos);
+    QPoint screen_pos = mapFromScene(cursor_pos_);
 
-    emit cursorPositionChanged(pos);
+    // Update old cursor pos
+    QRectF invalid = mapRectToScene(QRect(
+                   screen_pos.x() - 12,
+                   screen_pos.y() - 12,
+                   24,
+                   24));
+
+    scene_->update(invalid);
+
+    // Set new cursor pos
+    cursor_pos_ = pos;
+
+    emit cursorPositionChanged(cursor_pos_);
 }
 
 void AView::moveCursor(QPointF offset, bool panPastEdges)
 {
-    setCursorPos(cursorPos() + offset, panPastEdges);
+    setCursorPos(cursor_pos_ + offset, panPastEdges);
 }
 
 void AView::moveCursor(double dx, double dy, bool panPastEdges)
@@ -292,12 +286,12 @@ void AView::moveCursor(double dx, double dy, bool panPastEdges)
 void AView::snapMouseToCursor()
 {
     // If the cursorPos is off screen, focus view on that point
-    if (!sceneRect().contains(cursorPos()))
+    if (!sceneRect().contains(cursor_pos_))
     {
-        centerOn(cursorPos());
+        centerOn(cursor_pos_);
     }
 
-    QPoint pos = mapToGlobal(mapFromScene(cursorPos()));
+    QPoint pos = mapToGlobal(mapFromScene(cursor_pos_));
 
     cursor().setPos(pos);
 }
@@ -365,13 +359,13 @@ void AView::keyPressEvent(QKeyEvent *event)
         // Center the screen at the cursor location
         if (event->modifiers() == Qt::ControlModifier)
         {
-            centerOn(cursorPos());
+            centerOn(cursor_pos_);
         }
         // Reset the cursor origin to the current cursor position
         else
         {
-            cursorOrigin_ = cursorPos();
-            emit cursorPositionChanged(cursorPos());
+            cursorOrigin_ = cursor_pos_;
+            emit cursorPositionChanged(cursor_pos_);
         }
 
         snapMouseToCursor();
@@ -473,7 +467,7 @@ void AView::mousePressEvent(QMouseEvent *event)
         setCursor(QCursor(Qt::OpenHandCursor));
         break;
     case Qt::LeftButton:
-        startPos_ = cursorPos();
+        startPos_ = cursor_pos_;
 
         if (!isToolActive())
         {
@@ -584,6 +578,25 @@ void AView::drawForeground(QPainter *painter, const QRectF &rect)
     {
         drawSelectionMarquee(painter, rect);
     }
+
+    // Draw the cursor
+    painter->save();
+    painter->resetTransform();
+    QPoint pos = mapFromScene(cursor_pos_);
+
+    QPoint dx(10, 0);
+    QPoint dy(0, 10);
+
+    QPen pen;
+    pen.setWidth(2);
+    pen.setColor(QColor(150,200,50));
+
+    painter->drawLine(pos - dx, pos + dx);
+    painter->drawLine(pos - dy, pos + dy);
+
+    painter->fillRect(pos.x() - 10, pos.y() - 10, 20, 20, QColor(100, 100, 100, 100));
+
+    painter->restore();
 }
 
 void AView::drawSelectionMarquee(QPainter *painter, const QRectF &rect)
@@ -618,8 +631,8 @@ QRectF AView::getSelectionMarquee()
 {
     return QRectF(startPos_.x(),
                   startPos_.y(),
-                  cursorPos().x() - startPos_.x(),
-                  cursorPos().y() - startPos_.y());
+                  cursor_pos_.x() - startPos_.x(),
+                  cursor_pos_.y() - startPos_.y());
 }
 
 
@@ -650,6 +663,57 @@ void AView::drawOverlay(QPainter *painter, QRect rect)
 
     Q_UNUSED(painter);
     Q_UNUSED(rect);
+}
+
+void AView::drawCursor(QPainter *painter, QRect rect)
+{
+    if (nullptr == painter) return;
+
+    QPoint viewPos = mapFromScene(cursor_pos_);
+    int x = viewPos.x();
+    int y = viewPos.y();
+
+    QPen p;
+    p.setWidth(1);
+
+    painter->setPen(p);
+
+    switch (cursorStyle_)
+    {
+    default:
+    case VIEW_CURSOR_NONE:
+        return;
+
+    // Draw a small cross at the cursor position
+    case VIEW_CURSOR_CROSS_SMALL:
+#define CURSOR 10
+        // Is the cursor position in view?
+        if ((viewPos.x() > -CURSOR) &&
+            (viewPos.x() < (width() + CURSOR)) &&
+            (viewPos.y() > -CURSOR) &&
+            (viewPos.y() < (height() + CURSOR)))
+        {
+            painter->drawLine(x-CURSOR,y,x+CURSOR,y);
+            painter->drawLine(x,y-CURSOR,x,y+CURSOR);
+        }
+        break;
+
+    case VIEW_CURSOR_CROSS_LARGE:
+
+        // Draw horizontal line
+        painter->drawLine(rect.left() - 1,
+                          y,
+                          rect.right() + 1,
+                          y);
+
+        // Draw vertical line
+        painter->drawLine(x,
+                          rect.top() - 1,
+                          x,
+                          rect.bottom() + 1);
+
+        break;
+    }
 }
 
 /**
@@ -965,7 +1029,7 @@ void AView::finishSelection()
         // Point Selection
         else
         {
-            QGraphicsItem *item = scene_->itemAt(cursorPos(), QTransform());
+            QGraphicsItem *item = scene_->itemAt(cursor_pos_, QTransform());
 
             // NO item at location, de-select all items
             if (nullptr == item)
