@@ -130,7 +130,7 @@ protected:
 
     // Overlay functions (drawn in viewport coordinates)
     virtual void drawOverlay(QPainter *painter, const QRectF &rect) const;
-    virtual void drawCursor(QPainter *painter) const;
+    virtual void drawCursor(QPainter *painter, const QRectF &rect) const;
 
     AScene *scene_;
 

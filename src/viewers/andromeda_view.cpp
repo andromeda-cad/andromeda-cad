@@ -440,7 +440,7 @@ void AView::wheelEvent(QWheelEvent *event)
     float zoom = (float) event->delta() * 0.01f;
 
     // Account for 'negative' zoom
-    if (zoom < 0)
+    if ( zoom < 0 )
         zoom = -1.0 / zoom;
 
     scaleRelative(zoom);
@@ -462,17 +462,14 @@ void AView::mousePressEvent(QMouseEvent *event)
 {
     if (event == NULL || nullptr == scene_) return;
 
-    QPointF scenePos = mapToScene(event->pos());
+    QPointF scenePos = mapToScene( event->pos() );
 
-    setCursorPos(scenePos);
+    setCursorPos( scenePos );
 
-    sendMouseEventToTool(event);
+    sendMouseEventToTool( event );
 
-    switch (event->button())
+    switch ( event->button() )
     {
-    case Qt::MiddleButton:
-        setCursor(QCursor(Qt::OpenHandCursor));
-        break;
     case Qt::LeftButton:
         if ( !isToolActive() )
         {
@@ -487,7 +484,7 @@ void AView::mousePressEvent(QMouseEvent *event)
 
 void AView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    sendMouseEventToTool(event);
+    sendMouseEventToTool( event );
 }
 
 void AView::mouseReleaseEvent(QMouseEvent *event)
@@ -497,11 +494,16 @@ void AView::mouseReleaseEvent(QMouseEvent *event)
     QPointF scenePos = mapToScene( event->pos() );
 
     // Left mouse button is used for selection
-    if (mouse_pan_active_ &&  event->button() == Qt::MiddleButton)
+    if ( event->button() == Qt::MiddleButton )
     {
+        if ( !mouse_pan_active_ )
+        {
+            centerOn( mapToScene( event->pos() ) );
+        }
+
         endMousePan();
     }
-    else if (selection_active_ && event->button() == Qt::LeftButton)
+    else if ( selection_active_ && event->button() == Qt::LeftButton )
     {
         finishSelection( scenePos );
 
@@ -587,7 +589,7 @@ void AView::drawForeground(QPainter *painter, const QRectF &rect)
     {
         current_tool_->paint(painter, rect);
 
-        drawCursor( painter );
+        drawCursor( painter, rect );
     }
 
     else if ( selection_enabled_ && selection_active_ )
@@ -656,7 +658,7 @@ void AView::drawOverlay(QPainter *painter, const QRectF &rect) const
     Q_UNUSED( rect );
 }
 
-void AView::drawCursor(QPainter *painter) const
+void AView::drawCursor(QPainter *painter, const QRectF &rect) const
 {
     if (nullptr == painter) return;
 
@@ -678,6 +680,8 @@ void AView::drawCursor(QPainter *painter) const
     painter->drawLine( pos - dy, pos + dy );
 
     painter->restore();
+
+    painter->setClipRect( rect );
 }
 
 /**

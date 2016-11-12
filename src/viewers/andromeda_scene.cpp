@@ -10,7 +10,7 @@ AScene::AScene(QObject *parent) : QGraphicsScene(parent)
 
 void AScene::init()
 {
-    axis_pen_.setColor(QColor(150,150,150,150));
+    axis_pen_.setColor(QColor(150,150,200,200));
     axis_pen_.setWidth(2);
     axis_pen_.setCapStyle(Qt::RoundCap);
     axis_pen_.setJoinStyle(Qt::RoundJoin);
