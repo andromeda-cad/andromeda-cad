@@ -83,7 +83,7 @@ void AEllipse::setRadius(double rx, double ry)
     if ((rx == rx_) && (ry == ry_)) return;
 
     //TODO - make this action undoable
-    //setUndoAction(OBJ_KEY::RADIUS, );
+    //addUndoAction(OBJ_KEY::RADIUS, );
 
     if (rx != 0)
         rx_ = qFabs(rx);

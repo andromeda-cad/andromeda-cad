@@ -80,7 +80,7 @@ void ADrawableBase::setPos(QPointF point)
     if (point == pos()) return;
 
     //TODO - remove hard coded action title
-    setUndoAction("Move",
+    addUndoAction("Move",
                   OBJ_KEY::POS,
                   AJsonObject::fromPoint(pos()),
                   AJsonObject::fromPoint(point));

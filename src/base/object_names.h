@@ -14,7 +14,7 @@ const QString A_DRAWABLE_BASE = "ADrawableBase";
 const QString A_DRAWABLE_PRIMITIVE = "ADrawablePrimitive";
 const QString A_DRAWABLE_ELLIPSE = "ADrawableEllipse";
 const QString A_DRAWABLE_POLYLINE = "ADrawablePolyline";
-const QString A_DRAWABLE_SYMBOL_PIN = "ADrawabableSymbolPin";
+const QString A_DRAWABLE_SYMBOL_PIN = "ADrawableSymbolPin";
 const QString A_DRAWABLE_TEXT = "ADrawableText";
 
 // Complex drawable items

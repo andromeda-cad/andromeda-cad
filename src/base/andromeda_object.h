@@ -40,8 +40,8 @@ public:
     void copyTo(AndromedaObject *other);
 
     // Invertible JSON function for granular undo stacking
-    void setUndoAction(QString title, QString key, QJsonValue before, QJsonValue after);
-    void setUndoAction(QString title, QString key, QJsonValue value);
+    void addUndoAction(QString title, QString key, QJsonValue before, QJsonValue after);
+    void addUndoAction(QString title, QString key, QJsonValue value);
 
     // Various getters
     bool isUndoEnabled(void) { return undo_enabled_; }
@@ -50,8 +50,7 @@ public:
 public slots:
     virtual bool undo(void);    // Perform to perform top item on undo stack
     virtual bool redo(void);    // Attempt to perform top item on redo stack
-    void setUndoEnabled(bool enabled) { undo_enabled_ = enabled; }
-
+    void setUndoEnabled(bool enabled);
 
 protected:
     // Stack for holding UNDO / REDO commands for this object

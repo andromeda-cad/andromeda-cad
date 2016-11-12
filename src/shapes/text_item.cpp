@@ -28,7 +28,7 @@ void ATextItem::setText(QString text)
     //TODO - perform any checks here?
 
     //TODO - make the action invertible
-    //setUndoAction();
+    //addUndoAction();
 
     text_ = text;
 
