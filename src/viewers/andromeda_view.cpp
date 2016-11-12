@@ -443,18 +443,33 @@ void AView::wheelEvent(QWheelEvent *event)
 {
     if (scene_ == NULL || nullptr == event) return;
 
-    float zoom = (float) event->delta() * 0.01f;
-
-    // Account for 'negative' zoom
-    if ( zoom < 0 )
-        zoom = -1.0 / zoom;
-
-    scaleRelative(zoom);
-
-    // Re-move the cursor to the mouse position
+    // Extract mouse position BEFORE scrolling
     QPoint mousePos = mapFromGlobal( cursor().pos() );
 
     QPointF scenePos = mapToScene( mousePos );
+
+    int mods = (int) event->modifiers();
+
+    int delta = event->delta();
+
+    if ( mods & Qt::ShiftModifier )
+    {
+        scroll( 0, delta/10 );
+    }
+    else if ( mods & Qt::ControlModifier )
+    {
+        scroll( delta/10, 0 );
+    }
+    else
+    {
+        float zoom = (float) event->delta() * 0.01f;
+
+        // Account for 'negative' zoom
+        if ( zoom < 0 )
+            zoom = -1.0 / zoom;
+
+        scaleRelative(zoom);
+    }
 
     setCursorPos( scenePos );
 
