@@ -62,7 +62,8 @@ HEADERS += \
     src/dialogs/object_editor.h \
     src/shapes/text_item.h \
     src/viewers/symbol_viewer.h \
-    src/viewers/symbol_editor.h
+    src/viewers/symbol_editor.h \
+    src/viewers/cursor.h
 
 SOURCES += \
     src/base/andromeda_object.cpp \
@@ -98,4 +99,5 @@ SOURCES += \
     src/dialogs/object_editor.cpp \
     src/shapes/text_item.cpp \
     src/viewers/symbol_editor.cpp \
-    src/viewers/symbol_viewer.cpp
+    src/viewers/symbol_viewer.cpp \
+    src/viewers/cursor.cpp

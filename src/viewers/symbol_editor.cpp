@@ -109,8 +109,7 @@ void ASymbolEditor::keyPressEvent(QKeyEvent *event)
         switch (event->key())
         {
         case Qt::Key_Q:
-            scene_->clear();
-
+            clear();
             qDebug() << "Clear scene took" << t.elapsed() << "ms";
             break;
         case Qt::Key_N:
