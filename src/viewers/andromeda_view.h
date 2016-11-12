@@ -136,10 +136,9 @@ protected:
 
     QPointF cursorOrigin_;  // 'Origin' of the cursor
     QPointF cursor_pos_; // Current location of the cursor
-    QPointF startPos_;  // Location of the 'starting' position (used for multiple functions)
 
-    // Selection functions
-    QRectF getSelectionMarquee(void);
+    // Selection marquee (in scene coords)
+    QRectF selection_marquee_;
 
     // Tools
     AToolBase *current_tool_ = nullptr;
@@ -163,8 +162,9 @@ protected:
     // Selection
     bool selection_enabled_ = false;
     bool selection_active_ = false;
-    void startSelection();
-    void finishSelection();
+    void startSelection(QPointF pos);
+    void updateSelection(QPointF pos);
+    void finishSelection(QPointF pos);
     void cancelSelection();
 
     void toggleViewportMode(void);

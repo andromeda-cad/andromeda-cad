@@ -467,11 +467,9 @@ void AView::mousePressEvent(QMouseEvent *event)
         setCursor(QCursor(Qt::OpenHandCursor));
         break;
     case Qt::LeftButton:
-        startPos_ = cursor_pos_;
-
-        if (!isToolActive())
+        if ( !isToolActive() )
         {
-            startSelection();
+            startSelection( scenePos );
         }
         break;
 
@@ -489,6 +487,8 @@ void AView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (scene_ == NULL || nullptr == event) return;
 
+    QPointF scenePos = mapToScene( event->pos() );
+
     // Left mouse button is used for selection
     if (mouse_pan_active_ &&  event->button() == Qt::MiddleButton)
     {
@@ -496,7 +496,7 @@ void AView::mouseReleaseEvent(QMouseEvent *event)
     }
     else if (selection_active_ && event->button() == Qt::LeftButton)
     {
-        finishSelection();
+        finishSelection( scenePos );
 
         update();
     }
@@ -516,25 +516,32 @@ void AView::mouseMoveEvent(QMouseEvent *event)
     // Grab the mouse position
     QPoint mousePos = event->pos();
 
-    setCursorPos(mapToScene(mousePos));
+    QPointF scenePos = mapToScene( event->pos() );
+
+    setCursorPos( mapToScene( mousePos ) );
 
     // Check for panning event
     if (event->buttons() & Qt::MiddleButton)
     {
-        if (!mouse_pan_active_)
+        if ( !mouse_pan_active_ )
         {
             startMousePan();
         }
         else
         {
             QPoint delta = mousePos - lastMousePos;
-            scroll(delta);
+            scroll( delta );
         }
 
         // Set the panning flag
         lastMousePos = mousePos;
 
         return;
+    }
+
+    if ( selection_active_ )
+    {
+        updateSelection( scenePos );
     }
 
     endMousePan();
@@ -576,9 +583,10 @@ void AView::drawForeground(QPainter *painter, const QRectF &rect)
 
     else if (selection_enabled_ && selection_active_)
     {
-        drawSelectionMarquee(painter, rect);
+        drawSelectionMarquee( painter, rect );
     }
 
+    /*
     // Draw the cursor
     painter->save();
     painter->resetTransform();
@@ -597,20 +605,19 @@ void AView::drawForeground(QPainter *painter, const QRectF &rect)
     painter->fillRect(pos.x() - 10, pos.y() - 10, 20, 20, QColor(100, 100, 100, 100));
 
     painter->restore();
+    */
 }
 
 void AView::drawSelectionMarquee(QPainter *painter, const QRectF &rect)
 {
     if (nullptr == painter) return;
 
-    QRectF selection = getSelectionMarquee();
-
     // Don't paint if off-screen
-    if (!selection.intersects(rect)) return;
+    if (!selection_marquee_.normalized().intersects(rect)) return;
 
     QPen marqueePen(QColor(0,255,200,200));
 
-    bool crossing = selection.width() < 0;
+    bool crossing = selection_marquee_.width() < 0;
 
     marqueePen.setCapStyle(Qt::RoundCap);
     marqueePen.setJoinStyle(Qt::RoundJoin);
@@ -619,22 +626,13 @@ void AView::drawSelectionMarquee(QPainter *painter, const QRectF &rect)
 
     marqueePen.setCosmetic(true);
 
-    QBrush marqueeBrush(crossing? QColor(0,120,50,50) : QColor(0,50,120,50));
+    QBrush marqueeBrush(crossing ? QColor(0,120,50,50) : QColor(0,50,120,50));
 
     painter->setPen(marqueePen);
     painter->setBrush(marqueeBrush);
 
-    painter->drawRect(selection.normalized());
+    painter->drawRect(selection_marquee_);
 }
-
-QRectF AView::getSelectionMarquee()
-{
-    return QRectF(startPos_.x(),
-                  startPos_.y(),
-                  cursor_pos_.x() - startPos_.x(),
-                  cursor_pos_.y() - startPos_.y());
-}
-
 
 void AView::paintEvent(QPaintEvent *event)
 {
@@ -952,11 +950,28 @@ void AView::setCursorStyle(unsigned char style)
     }
 }
 
-void AView::startSelection()
+void AView::startSelection(QPointF pos)
 {
     if ( !selection_enabled_ ) return;
 
+    selection_marquee_.setTopLeft( pos );
+
+    updateSelection( pos );
+
     selection_active_ = true;
+}
+
+void AView::updateSelection(QPointF pos)
+{
+    QRectF toUpdate = selection_marquee_;
+
+    selection_marquee_.setBottomRight( pos );
+
+    toUpdate = toUpdate.united( selection_marquee_ );
+
+    toUpdate.adjust(-1, -1, 1, 1);
+
+    scene_->update( toUpdate );
 }
 
 void AView::cancelSelection()
@@ -964,19 +979,19 @@ void AView::cancelSelection()
     selection_active_ = false;
 }
 
-void AView::finishSelection()
+void AView::finishSelection(QPointF pos)
 {
+    updateSelection( pos );
+
     if ( selection_enabled_ && selection_active_ )
     {
         int mods = (int) QApplication::keyboardModifiers();
 
-        QRectF selection = getSelectionMarquee();
-
         QPointF pixels = unitsPerPixel();
 
         // Ignore 'small' selections
-        bool validSelection = ((qAbs(selection.width()  / pixels.x()) > 5) &&
-                               (qAbs(selection.height() / pixels.y()) > 5));
+        bool validSelection = ((qAbs(selection_marquee_.width()  / pixels.x()) > 5) &&
+                               (qAbs(selection_marquee_.height() / pixels.y()) > 5));
 
         // Rectangular selection
         if (validSelection)
@@ -991,17 +1006,16 @@ void AView::finishSelection()
             blockSignals(true);
 
             // Selection drawn left-to-right requires full selection
-            if (selection.width() > 0)
+            if (selection_marquee_.width() > 0)
             {
-                items = scene_->items(selection, Qt::ContainsItemShape);
+                items = scene_->items(selection_marquee_.normalized(), Qt::ContainsItemShape);
             }
             else
             {
-                items = scene_->items(selection.normalized(), Qt::IntersectsItemShape);
+                items = scene_->items(selection_marquee_.normalized(), Qt::IntersectsItemShape);
             }
 
             bool select = true;
-
 
             if (mods & Qt::ControlModifier)
             {
