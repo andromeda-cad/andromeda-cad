@@ -20,6 +20,8 @@ class SymbolEditorView : public AView
 public:
     SymbolEditorView(QWidget * parent = 0);
 
+    void addItems(void);
+
 public slots:
     //TODO these are just hacky. To be remove
     void drawRect(void)     { startTool(&rect_tool_); }

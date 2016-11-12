@@ -24,7 +24,7 @@ public:
 
     // Background functions
     QColor getBackgroundColor() { return bg_color_; }
-    void drawBackground(QPainter *painter, const QRectF &rect);
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
 
     // Axis functions
     bool getAxesEnabled() { return draw_axes_; }

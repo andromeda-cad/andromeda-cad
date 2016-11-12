@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QLineF>
 
+#include <QGraphicsTextItem>
+
 #include "src/geometry/geometry.h"
 #include "src/shapes/ellipse.h"
 #include "src/shapes/text_item.h"
@@ -20,23 +22,38 @@ SymbolEditorView::SymbolEditorView(QWidget *parent) : AView(parent)
 
     setCacheMode(QGraphicsView::CacheBackground);
 
-//#define TEST_TEXT
-//#define TEST_ELLIPSE
-//#define TEST_RECT
+    addItems();
+}
+
+void SymbolEditorView::addItems()
+{
+
+#define TEST_TEXT
+#define TEST_ELLIPSE
+#define TEST_RECT
 
     AEllipse *ellipse;
-    ATextItem *text;
+    //ATextItem *text;
     APolyline *rect;
 
+    QGraphicsTextItem *text;
 
-    for (int i=-100; i<100; i+=2)
+    QElapsedTimer t;
+
+    t.start();
+
+    for (int i=-200; i<200; i+=5)
     {
-        for (int j=-100; j<100; j+=2)
+        for (int j=-100; j<100; j+= 5)
         {
 #ifdef TEST_TEXT
-            text = new ATextItem();
-            text->setText("ABCDE");
+            //text = new ATextItem();
+            text = new QGraphicsTextItem();
+            text->setPlainText("ABCDE");
+            text->setFlags(QGraphicsItem::ItemIsSelectable);
+            //text->setText("ABCDE");
             text->setPos(i*15,j*15);
+            text->setZValue(3);
             scene_->addItem(text);
 #endif
 #ifdef TEST_ELLIPSE
@@ -44,6 +61,7 @@ SymbolEditorView::SymbolEditorView(QWidget *parent) : AView(parent)
             ellipse->setRadius(5,5);
             ellipse->setLineWidth(5);
             ellipse->setPos(i*10,j*10);
+            ellipse->setZValue(1);
             scene_->addItem(ellipse);
 #endif
 
@@ -52,18 +70,20 @@ SymbolEditorView::SymbolEditorView(QWidget *parent) : AView(parent)
 
             rect->setLineWidth(2.5);
 
-            rect->addPoint(QPointF(-5,-5));
-            rect->addPoint(QPointF(5,-5));
-            rect->addPoint(QPointF(5,5));
-            rect->addPoint(QPointF(-5,5));
-            rect->addPoint(QPointF(-5,-5));
+            rect->addPoint(QPointF(-5,-10));
+            rect->addPoint(QPointF( 5,-10));
+            rect->addPoint(QPointF( 5, 10));
+            rect->addPoint(QPointF(-5, 10));
+            rect->addPoint(QPointF(-5,-10));
 
             rect->setPos(i*12, j*12);
-
+            rect->setZValue(2);
             scene_->addItem(rect);
 #endif
         }
     }
+
+    qDebug() << "Adding items took" << t.elapsed() << "ms";
 }
 
 void SymbolEditorView::keyPressEvent(QKeyEvent *event)
@@ -74,6 +94,10 @@ void SymbolEditorView::keyPressEvent(QKeyEvent *event)
 
     ATextItem *text;
 
+    QElapsedTimer t;
+
+    t.start();
+
     if (isToolActive())
     {
         sendKeyEventToTool(event);
@@ -83,6 +107,14 @@ void SymbolEditorView::keyPressEvent(QKeyEvent *event)
         // Tool activation keys
         switch (event->key())
         {
+        case Qt::Key_Q:
+            scene_->clear();
+
+            qDebug() << "Clear scene took" << t.elapsed() << "ms";
+            break;
+        case Qt::Key_N:
+            addItems();
+            break;
         case Qt::Key_X: // Delete
             deleteSelectedItems();
             break;

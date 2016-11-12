@@ -22,7 +22,10 @@ void AScene::init()
     grid_pen_.setJoinStyle(Qt::RoundJoin);
     grid_pen_.setCosmetic(true);
 
-    setMinimumRenderSize(0.01);
+    setMinimumRenderSize(0.5);
+
+    //setItemIndexMethod(QGraphicsScene::NoIndex);
+    //setBspTreeDepth(20);
 }
 
 void AScene::setLayerDisplayMode(int mode)

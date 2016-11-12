@@ -45,6 +45,8 @@ protected:
     // Properties unique to the ellipse class
     double rx_ = 0;
     double ry_ = 0;
+
+    QRectF bb_;
 };
 
 #endif // SHAPES_ELLIPSE_H

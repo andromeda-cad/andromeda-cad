@@ -4,6 +4,10 @@
 #include <QDebug>
 #include <QTime>
 
+#include <QPainter>
+
+#include <QProgressDialog>
+
 #include "src/grid/grid.h"
 
 
@@ -22,6 +26,10 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
 
     setDragMode(QGraphicsView::RubberBandDrag);
 
+    setCacheMode(CacheBackground);
+
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
     setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing);
     //setOptimizationFlags(QGraphicsView::DontSavePainterState);
     //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
@@ -31,6 +39,49 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
     setScene(new AScene());
 
     connect(scene_, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
+
+    toggleViewportMode();
+
+    configureShortcuts();
+}
+
+void AView::configureShortcuts()
+{
+    m_shortcut_select_all = new QShortcut(QKeySequence("Ctrl+A"), this);
+    m_shortcut_select_all->setAutoRepeat(false);
+    m_shortcut_select_all->setEnabled(true);
+
+    connect(m_shortcut_select_all, SIGNAL(activated()), this, SLOT(selectAll()));
+}
+
+void AView::toggleViewportMode()
+{
+    static bool mode = true;
+
+    mode = !mode;
+
+    if (mode) // OpenGL mode
+    {
+        QOpenGLWidget *gl = new QOpenGLWidget(this);
+
+        QSurfaceFormat format;
+
+        format.setSamples(4);
+
+        gl->setFormat(format);
+
+        setViewport( gl );
+        setViewportUpdateMode(FullViewportUpdate);
+
+        qDebug() << "OpenGL";
+    }
+    else
+    {
+        setViewport(new QWidget());
+        setViewportUpdateMode(SmartViewportUpdate);
+
+        qDebug() << "Raster";
+    }
 }
 
 void AView::setScene(AScene *scene)
@@ -40,22 +91,108 @@ void AView::setScene(AScene *scene)
     QGraphicsView::setScene(scene);
 }
 
+/*
+ * Select all items
+ */
+void AView::selectAll(int filter)
+{
+    Q_UNUSED(filter);
+
+    QList<QGraphicsItem*> items;
+
+    QGraphicsItem *item;
+
+    items = scene_->items();
+
+    qDebug() << "Select All:" << items.count();
+
+    // Alt key allows only visible items selected
+    bool alt = (QApplication::keyboardModifiers() & Qt::AltModifier);
+
+    QRectF bounds = getViewBounds();
+
+    // Stop scene from emitting selectionChanged
+    scene_->blockSignals(true);
+
+    for (int i=0; i<items.count(); i++)
+    {
+        item = items.at(i);
+
+        if ( nullptr == item ) continue;
+
+        // Select item if ALT is not pressed OR it is visible
+        item->setSelected( !alt || bounds.contains(item->boundingRect() ) );
+    }
+
+    scene_->blockSignals(false);
+}
+
+QRect AView::mapRectFromScene(QRectF rect)
+{
+    QPoint tl = mapFromScene(rect.topLeft());
+    QPoint br = mapFromScene(rect.bottomRight());
+
+    return QRect(tl, br);
+}
+
+QRectF AView::mapRectToScene(QRect rect)
+{
+    QPointF tl = mapToScene(rect.topLeft());
+    QPointF br = mapToScene(rect.bottomRight());
+
+    return QRectF(tl, br);
+}
+
 void AView::deleteItems(QList<QGraphicsItem *> items)
 {
     if (nullptr == scene_) return;
 
-    foreach (QGraphicsItem* item, items)
+    QProgressDialog dlg;
+
+    dlg.setMinimum(0);
+    dlg.setMaximum(items.count()/100);
+
+    dlg.setWindowTitle("Deleting " + QString::number(items.count()) + " items");
+
+    //dlg.show();
+
+    scene_->blockSignals(true);
+    blockSignals(true);
+
+    QElapsedTimer t;
+
+    t.start();
+
+    int count = 0;
+
+    for (int i=0;i<items.count();i++)
     {
-        // NULL ptr
-        if (nullptr == item) continue;
+        if (items[i] == nullptr) continue;
 
-        // Item is NOT in the scene
-        if (item->scene() != scene_) continue;
+        if (items[i]->scene() != scene_) continue;
 
-        scene_->removeItem(item);
+        //items[i]->setSelected(false);
+
+        scene_->removeItem(items[i]);
+
+
+        count = (count + 1) % 100;
+
+        if (count == 0)
+        {
+            //dlg.setValue(dlg.value()+1);
+            //QApplication::processEvents();
+        }
     }
 
+    //dlg.cancel();
+
+    scene_->blockSignals(false);
+    blockSignals(false);
+
     scene_->update();
+
+    qDebug() << "Deleting" << items.count() << "items took" << t.elapsed() << "ms";
 }
 
 void AView::deleteSelectedItems()
@@ -96,7 +233,7 @@ void AView::setCursorPos(QPointF pos, bool panPastEdges)
     if (panPastEdges)
     {
         // Check if the cursor has moved outside the screen bounds
-        QRectF view = getViewport();
+        QRectF view = getViewBounds();
 
         double dx = 0;
         double dy = 0;
@@ -114,11 +251,21 @@ void AView::setCursorPos(QPointF pos, bool panPastEdges)
         scroll(dx,dy);
     }
 
+    QPoint screen_pos = mapFromScene(cursor_pos_);
+
+    // Update old cursor pos
+    QRectF invalid = mapRectToScene(QRect(
+                   screen_pos.x() - 12,
+                   screen_pos.y() - 12,
+                   24,
+                   24));
+
+    scene_->update(invalid);
+
+    // Set new cursor pos
     cursor_pos_ = pos;
 
     emit cursorPositionChanged(cursor_pos_);
-
-    getScene()->update();
 }
 
 void AView::moveCursor(QPointF offset, bool panPastEdges)
@@ -193,9 +340,20 @@ void AView::keyPressEvent(QKeyEvent *event)
 
     switch (event->key())
     {
+    case Qt::Key_M:
+        toggleViewportMode();
+        break;
     case Qt::Key_Escape:
+        // If currently selecting, cancel the selection marquee
         if (selection_active_)
+        {
             cancelSelection();
+        }
+        // Finally
+        else
+        {
+            scene_->clearSelection();
+        }
         break;
     case Qt::Key_Space:
         // Center the screen at the cursor location
@@ -339,6 +497,8 @@ void AView::mouseReleaseEvent(QMouseEvent *event)
     else if (selection_active_ && event->button() == Qt::LeftButton)
     {
         finishSelection();
+
+        update();
     }
     else
     {
@@ -397,13 +557,6 @@ void AView::endMousePan()
     setCursor(QCursor(Qt::ArrowCursor));
 }
 
-/*
-void AView::drawBackground(QPainter *painter, const QRectF &rect)
-{
-
-}
-*/
-
 /**
  * @brief AView::drawForeground
  * Custom foreground painting (AFTER the scene is painted)
@@ -425,6 +578,25 @@ void AView::drawForeground(QPainter *painter, const QRectF &rect)
     {
         drawSelectionMarquee(painter, rect);
     }
+
+    // Draw the cursor
+    painter->save();
+    painter->resetTransform();
+    QPoint pos = mapFromScene(cursor_pos_);
+
+    QPoint dx(10, 0);
+    QPoint dy(0, 10);
+
+    QPen pen;
+    pen.setWidth(2);
+    pen.setColor(QColor(150,200,50));
+
+    painter->drawLine(pos - dx, pos + dx);
+    painter->drawLine(pos - dy, pos + dy);
+
+    painter->fillRect(pos.x() - 10, pos.y() - 10, 20, 20, QColor(100, 100, 100, 100));
+
+    painter->restore();
 }
 
 void AView::drawSelectionMarquee(QPainter *painter, const QRectF &rect)
@@ -463,39 +635,26 @@ QRectF AView::getSelectionMarquee()
                   cursor_pos_.y() - startPos_.y());
 }
 
+
 void AView::paintEvent(QPaintEvent *event)
 {
-#define REDRAW_TIMER
+    // Don't double render
+    if (!paint_mutex_.tryLock(10))
+        return;
 
-    if (nullptr == event) return;
+    static QElapsedTimer t;
 
-    QTime time;
-    time.start();
+    t.start();
 
-    // First perform scene painting
     QGraphicsView::paintEvent(event);
 
-    int elapsed = time.elapsed();
+    QString time = QString::number((double) t.nsecsElapsed() / 1000 / 1000, 'f', 3) + "ms";
 
-    // Grab the painter
-    QPainter painter(viewport());
+    QString dims = QString(" (") + QString::number(event->rect().width()) + ", " + QString::number(event->rect().height()) + QString(")");
 
-    //TODO - draw a different cursor if the user is using a tool or just navigating
-    // Draw the cursor
-    if (isToolActive())
-        drawCursor(&painter, event->rect());
+    emit updateStats(time + dims);
 
-    // Draw the overlay
-    if (checkViewFlags(VIEW_FLAG_DRAW_OVERLAY))
-        drawOverlay(&painter, event->rect());
-
-    painter.setPen(QPen(QColor(255,0,255)));
-
-    // Draw repaint time
-#ifdef REDRAW_TIMER
-    painter.fillRect(QRectF(0,0,100,20), QColor(255,255,255));
-    painter.drawText(QRectF(0,0,100,20), QString::number(elapsed) + "ms");
-#endif
+    paint_mutex_.unlock();
 }
 
 void AView::drawOverlay(QPainter *painter, QRect rect)
@@ -570,7 +729,7 @@ QPointF AView::getCenterLocation()
  * @brief AView::getViewport
  * @return the viewport rectangle in scene coordinates
  */
-QRectF AView::getViewport()
+QRectF AView::getViewBounds()
 {
     return QRectF(
                 mapToScene(0,0),
@@ -584,7 +743,7 @@ QRectF AView::getViewport()
  */
 QPointF AView::unitsPerPixel()
 {
-    QRectF scene = getViewport();
+    QRectF scene = getViewBounds();
 
     return QPointF(scene.width() / width(), scene.height() / height());
 }
@@ -820,8 +979,14 @@ void AView::finishSelection()
         // Rectangular selection
         if (validSelection)
         {
+            QElapsedTimer t;
+
+            t.start();
 
             QList<QGraphicsItem*> items;
+
+            scene_->blockSignals(true);
+            blockSignals(true);
 
             // Selection drawn left-to-right requires full selection
             if (selection.width() > 0)
@@ -845,14 +1010,19 @@ void AView::finishSelection()
                 scene_->clearSelection();
             }
 
-            foreach (QGraphicsItem *item, items)
+            for (int i=0;i<items.count();i++)
             {
-                if (nullptr == item) continue;
+                if (items[i] == nullptr) continue;
 
-                item->setSelected(select);
+                items[i]->setSelected(select);
             }
 
-            scene_->update();
+            scene_->blockSignals(false);
+            blockSignals(false);
+
+            update();
+
+            qDebug() << "Selecting" << items.count() << "items took" << t.elapsed() << "ms";
         }
         // Point Selection
         else
@@ -876,9 +1046,10 @@ void AView::finishSelection()
                 item->setSelected(true);
             }
 
-            scene_->update();
         }
 
         cancelSelection();
     }
+
+    scene_->update();
 }

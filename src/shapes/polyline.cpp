@@ -15,6 +15,8 @@
 APolyline::APolyline(QObject *parent) : ADrawablePrimitive(parent)
 {
     setObjectName(OBJECT_NAME::A_DRAWABLE_POLYLINE);
+
+    //setCacheMode(QGraphicsItem::ItemCoordinateCache);
 }
 
 void APolyline::encode(AJsonObject &data, bool hideDefaults) const
@@ -176,6 +178,8 @@ void APolyline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     QPainterPath path = shape();
 
     painter->setPen(pen(option));
+
+    painter->setClipRect(option->exposedRect);
 
     // Straight line segments can't be filled
     if (pointCount() == 2)

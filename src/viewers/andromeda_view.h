@@ -8,9 +8,17 @@
 #include <QPaintEvent>
 #include <QCursor>
 
+#include <QShortcut>
+
 #include "src/tools/tool_base.h"
 
 #include "andromeda_scene.h"
+
+#include <QtOpenGL>
+
+#include <QElapsedTimer>
+
+#include <QMutex>
 
 #define ANDROMEDA_VIEW_MAX_SCALING 100.0f
 #define ANDROMEDA_VIEW_MIN_SCALING 0.001f
@@ -25,11 +33,14 @@ public:
     void setScene(AScene *scene);
     AScene* getScene(void) { return scene_; }
 
+    QRectF mapRectToScene(QRect rect);
+    QRect mapRectFromScene(QRectF rect);
+
     //TODO make these slots
 
     // Viewport functions
     QPointF getCenterLocation(void);
-    QRectF getViewport(void);
+    QRectF getViewBounds(void);
     QPointF unitsPerPixel(void);
 
     // Cursor functions
@@ -91,28 +102,30 @@ public slots:
     void toolFinished(void);
     void toolCancelled(void);
 
+    // Selection functions
+    virtual void selectAll(int filter = 0);
     virtual void onSelectionChanged(void) {}
 
 signals:
     // Called when the user cursor changes (in scene coordinates)
     void cursorPositionChanged(QPointF pos);
+    void updateStats( QString stats );
 
 protected:
     // UI event callbacks
-    void wheelEvent(QWheelEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
-    void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event) override;
 
     // Painting functions (drawn in scene coordinates)
-    //void drawBackground(QPainter *painter, const QRectF &rect);
-    void drawForeground(QPainter *painter, const QRectF &rect);
+    void drawForeground(QPainter *painter, const QRectF &rect) override;
     void drawSelectionMarquee(QPainter *painter, const QRectF &rect);
 
     // Overlay functions (drawn in viewport coordinates)
@@ -153,7 +166,15 @@ protected:
     void finishSelection();
     void cancelSelection();
 
+    void toggleViewportMode(void);
+
+    // Keyboard shortcuts
+    QShortcut *m_shortcut_select_all;
+
+    virtual void configureShortcuts( void );
+
 private:
+    QMutex paint_mutex_;
 };
 
 #endif // ANDROMEDA_VIEW_H

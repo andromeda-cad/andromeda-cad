@@ -17,13 +17,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->graphicsView->setInteractive(true);
 
-    ui->graphicsView->getScene()->setSceneRect(-1000,-1000,2000,2000);
+    ui->graphicsView->getScene()->setSceneRect(-5000,-5000,10000,10000);
+
+    ui->graphicsView->setSceneRect(ui->graphicsView->getScene()->sceneRect());
 
     // Uncomment to set dark background
     //ui->graphicsView->getScene()->setBackgroundColor(QColor(25,25,25));
 
     connect(ui->graphicsView->scene(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
-    connect(ui->graphicsView,SIGNAL(cursorPositionChanged(QPointF)),this,SLOT(cursorPosChanged(QPointF)));
+
+    connect(ui->graphicsView, SIGNAL(updateStats(QString)), this, SLOT(updateStats(QString)));
+    //connect(ui->graphicsView,SIGNAL(cursorPositionChanged(QPointF)),this,SLOT(cursorPosChanged(QPointF)));
 
     connect(ui->ellipseButton, SIGNAL(released()), ui->graphicsView, SLOT(drawEllipse()));
     connect(ui->rectLine, SIGNAL(released()), ui->graphicsView, SLOT(drawRect()));
@@ -91,6 +95,16 @@ void MainWindow::selectionChanged()
                     QString::number(items.count()) +
                     QString(" items selected"));
     }
+}
+
+void MainWindow::updateStats(QString stats)
+{
+    ui->statusBar->clearMessage();
+    ui->statusBar->showMessage(stats);
+
+    ui->statusBar->update();
+
+    update();
 }
 
 void MainWindow::cursorPosChanged(QPointF pos)
