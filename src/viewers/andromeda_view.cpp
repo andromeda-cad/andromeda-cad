@@ -446,9 +446,16 @@ void AView::wheelEvent(QWheelEvent *event)
     scaleRelative(zoom);
 
     // Re-move the cursor to the mouse position
-    QPoint mousePos = mapFromGlobal(cursor().pos());
+    QPoint mousePos = mapFromGlobal( cursor().pos() );
 
-    setCursorPos(mapToScene(mousePos));
+    QPointF scenePos = mapToScene( mousePos );
+
+    setCursorPos( scenePos );
+
+    if ( selection_active_ )
+    {
+        updateSelection( scenePos );
+    }
 }
 
 void AView::mousePressEvent(QMouseEvent *event)
