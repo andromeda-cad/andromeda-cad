@@ -1,12 +1,17 @@
+#include <QPixmap>
+#include <QtSvg/QSvgRenderer>
+#include <QIcon>
+#include <QDebug>
+
 #include "pin_editor.h"
 
 PinEditorDialog::PinEditorDialog(QWidget *parent) : ObjectEditorDialog(parent)
 {
-    pin_.setUndoEnabled(false);
+    pin_.setUndoEnabled( false );
 
-    ui.setupUi(this);
+    ui.setupUi( this );
 
-    setWindowTitle("Pin Editor");
+    setWindowTitle( "Pin Properties" );
 
     reloadSettings();
 

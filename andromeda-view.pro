@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui svg
 
 qtHaveModule(opengl): QT += opengl
 
@@ -21,7 +21,8 @@ FORMS    += \
     ui/dialogs/pin_editor.ui
 
 RESOURCES += \
-    resources/fonts.qrc
+    resources/fonts.qrc \
+    resources/icons.qrc
 
 HEADERS += \
     src/base/andromeda_object.h \

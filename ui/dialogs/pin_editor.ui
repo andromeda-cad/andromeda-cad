@@ -6,15 +6,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>255</width>
-    <height>168</height>
+    <width>317</width>
+    <height>316</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0" colspan="4">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Label</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>pinLabel</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer_2">
@@ -45,31 +58,116 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Label</string>
+      <string>Length</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>pinLength</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Orientation</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>pinOrientation</cstring>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
     <widget class="QLineEdit" name="pinLabel"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="pinOrientation">
+     <property name="iconSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>Left</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../resources/icons.qrc">
+        <normaloff>:/icons/symbol/pin_orient_left.svg</normaloff>:/icons/symbol/pin_orient_left.svg</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Down</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../resources/icons.qrc">
+        <normaloff>:/icons/symbol/pin_orient_down.svg</normaloff>:/icons/symbol/pin_orient_down.svg</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Right</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../resources/icons.qrc">
+        <normaloff>:/icons/symbol/pin_orient_right.svg</normaloff>:/icons/symbol/pin_orient_right.svg</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Up</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../resources/icons.qrc">
+        <normaloff>:/icons/symbol/pin_orient_up.svg</normaloff>:/icons/symbol/pin_orient_up.svg</iconset>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QSpinBox" name="pinLength">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="minimum">
+      <number>50</number>
+     </property>
+     <property name="maximum">
+      <number>250</number>
+     </property>
+     <property name="singleStep">
+      <number>25</number>
+     </property>
+     <property name="value">
+      <number>100</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>units</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="4">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
    </item>
    <item row="0" column="3">
     <spacer name="horizontalSpacer">
@@ -84,75 +182,43 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Orientation</string>
+   <item row="3" column="0" colspan="3">
+    <widget class="QWidget" name="pinPreview" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="pinOrientation">
-     <item>
-      <property name="text">
-       <string>LEFT</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>DOWN</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>RIGHT</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>UP</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Length</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QSpinBox" name="pinLength">
-     <property name="minimum">
-      <number>50</number>
-     </property>
-     <property name="maximum">
-      <number>250</number>
-     </property>
-     <property name="singleStep">
-      <number>25</number>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>units</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <property name="minimumSize">
+      <size>
+       <width>150</width>
+       <height>150</height>
+      </size>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
- <connections/>
+ <resources>
+  <include location="../../resources/icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pinLabel</sender>
+   <signal>returnPressed()</signal>
+   <receiver>ok</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>18</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>172</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
