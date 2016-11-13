@@ -13,6 +13,7 @@ ATextItem::ATextItem(QObject *parent) : ADrawablePrimitive(parent)
     //static_text_.setPerformanceHint(QStaticText::AggressiveCaching);
 
     font_.setPointSize(20);
+    font_.setFamily( "Roboto Mono" );
 }
 
 void ATextItem::setText(QString text)

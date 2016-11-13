@@ -23,11 +23,19 @@ void LoadFonts( void )
 {
     int id;
 
-    id = QFontDatabase::addApplicationFont( ":/fonts/DejaVuSansMono.ttf" );
+    QStringList fonts;
 
-    if ( -1 == id )
+    fonts << ":/fonts/RobotoMono-Bold.ttf";
+    fonts << ":/fonts/RobotoMono-Italic.ttf";
+    fonts << ":/fonts/RobotoMono-Regular.ttf";
+
+    for ( int i=0; i<fonts.count(); i++ )
     {
-        qWarning() << "Error loading font 'DejaVuSansMono.ttf'";
-    }
+        id = QFontDatabase::addApplicationFont( fonts.at( i ) );
 
+        if ( -1 == id )
+        {
+            qWarning() << fonts.at( i );
+        }
+    }
 }
