@@ -1,3 +1,15 @@
+Original AndromEDA sources are covered by the MIT license as below.
+Additional components may be covered under different licenses:
+
+    - Roboto fonts
+      resources/fonts/RobotoMono-Bold.ttf
+      resources/fonts/RobotoMono-Italic.ttf
+      resources/fonts/RobotoMono-Regular.ttf
+
+      These are covered by version 2.0 of the Apache License.
+
+===============================================================================
+
 The MIT License (MIT)
 Copyright (c) 2016 AndromEDA contributors
 
