@@ -108,8 +108,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>28</width>
-          <height>28</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="checkable">
@@ -134,8 +134,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>28</width>
-          <height>28</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="checkable">
@@ -157,8 +157,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>28</width>
-          <height>28</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="checkable">
@@ -180,8 +180,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>28</width>
-          <height>28</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="checkable">
@@ -206,8 +206,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>28</width>
-          <height>28</height>
+          <width>24</width>
+          <height>24</height>
          </size>
         </property>
         <property name="checkable">
