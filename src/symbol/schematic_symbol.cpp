@@ -18,8 +18,8 @@ ASchematicSymbol::ASchematicSymbol(QObject *parent) : ADrawableComplex(parent)
 void ASchematicSymbol::defaultValues()
 {
     //Initial values
-    setName( "CMP" );
-    setRef( "R?" );
+    setName( "CMP 1234567890" );
+    setRef( "R? 1IiL" );
 
     ref_text_.setParent(this);
     ref_text_.setParentItem(this);

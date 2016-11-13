@@ -30,6 +30,8 @@ public slots:
 
     ASchematicSymbol& symbol(void) { return symbol_; }
 
+    void symbolEdited(void);
+
 protected:
     void keyPressEvent(QKeyEvent *event);
 

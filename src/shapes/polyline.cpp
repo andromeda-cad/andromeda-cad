@@ -45,6 +45,9 @@ void APolyline::encode(AJsonObject &data, bool hideDefaults) const
     }
 
     data[OBJ_KEY::POINTS] = jPoints;
+
+    data[OBJ_KEY::THICKNESS] = lineWidth();
+    data[OBJ_KEY::FILLED] = isFilled();
 }
 
 void APolyline::decode(AJsonObject &data, bool undoable)

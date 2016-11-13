@@ -44,6 +44,8 @@ void AEllipse::encode(AJsonObject &data, bool hideDefaults) const
 {
     ADrawablePrimitive::encode(data, hideDefaults);
 
+    data[OBJ_KEY::THICKNESS] = lineWidth();
+    data[OBJ_KEY::FILLED] = isFilled();
     //TODO only encode one radius value if the ellipse is circular
 
     data.addPoint(OBJ_KEY::RADIUS, QPointF(rx(), ry()));

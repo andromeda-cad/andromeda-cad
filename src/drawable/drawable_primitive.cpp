@@ -13,9 +13,6 @@ void ADrawablePrimitive::encode(AJsonObject &data, bool hideDefaults) const
     ADrawableBase::encode(data, hideDefaults);
 
     data.remove(OBJ_KEY::FILLED);
-
-    data[OBJ_KEY::THICKNESS] = lineWidth();
-    data[OBJ_KEY::FILLED] = isFilled();
 }
 
 void ADrawablePrimitive::decode(AJsonObject &data, bool undoable)

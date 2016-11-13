@@ -188,14 +188,14 @@ void AndromedaObject::setUndoEnabled(bool enabled)
 
     AndromedaObject *child;
 
-    // Recursion!
+    // Recursion! Set the undo status of all child objects
     for ( int i=0; i<childs.count(); i++ )
     {
         child = static_cast<AndromedaObject*>( childs.at(i) );
 
         if ( nullptr == child ) continue;
 
-        qDebug() << "child" << child->objectName();
+        qDebug() << "child" << i << child->objectName();
         child->setUndoEnabled( enabled );
     }
 
@@ -240,4 +240,31 @@ bool AndromedaObject::redo()
     undo_enabled_ = true;
 
     return true;
+}
+
+/**
+ * @brief AndromedaObject::signalEdited should be called
+ * whenever a parameter is changed.
+ * If the 'pass' argument is true, the object will
+ * attempt to pass the edited signal up to its parent
+ * Otherwise, it will emit an 'edited()' signal
+ */
+void AndromedaObject::signalEdited(bool pass)
+{
+    if ( !pass )
+    {
+        emit edited();
+        return;
+    }
+
+    AndromedaObject *par = static_cast<AndromedaObject*>( parent() );
+
+    if ( nullptr == par )
+    {
+        emit edited();
+    }
+    else
+    {
+        par->signalEdited( true );
+    }
 }

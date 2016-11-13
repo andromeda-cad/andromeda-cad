@@ -24,6 +24,8 @@ ASymbolEditor::ASymbolEditor(QWidget *parent) : ASymbolViewer(parent)
 
     // Enable selection
     selection_enabled_ = true;
+
+    connect( &symbol_, SIGNAL( edited() ), this, SLOT( symbolEdited() ) );
 }
 
 void ASymbolEditor::addItems()
@@ -209,4 +211,9 @@ void ASymbolEditor::onToolFinished(AToolBase *toolPtr)
     }
 
     //qDebug() << symbol_.encodedString();
+}
+
+void ASymbolEditor::symbolEdited()
+{
+    qDebug() << "symbol was edited";
 }

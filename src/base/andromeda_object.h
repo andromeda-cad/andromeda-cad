@@ -52,10 +52,15 @@ public slots:
     virtual bool redo(void);    // Attempt to perform top item on redo stack
     void setUndoEnabled(bool enabled);
 
+signals:
+    void edited(void); // Should be emitted when object properties are updated
+
 protected:
     // Stack for holding UNDO / REDO commands for this object
     QUndoStack undo_stack_;
     bool undo_enabled_ = true;
+
+    void signalEdited(bool pass = true);    // Call when an object is edited
 
     void pushUndoAction(QUndoCommand *action);
 
