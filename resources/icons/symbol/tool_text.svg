@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   viewBox="0 0 64 64"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="tool_text.svg">
+  <defs
+     id="defs4">
+    <inkscape:path-effect
+       is_visible="true"
+       id="path-effect4142"
+       effect="spiro" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4138"
+       is_visible="true" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4.1365638"
+     inkscape:cx="120.91284"
+     inkscape:cy="-8.8528142"
+     inkscape:document-units="px"
+     inkscape:current-layer="flowRoot3339"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     units="px" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-371.83432,-290.20223)">
+    <g
+       id="g4150"
+       transform="matrix(1.1635659,0,0,1.1635659,-61.569574,-62.860857)">
+      <g
+         style="font-style:normal;font-weight:normal;font-size:73.57918549px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#333333;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot3339">
+        <path
+           d="m 419.88407,306.57291 0.5389,14.50992 -3.27507,0 c -0.26346,-2.01191 -0.62273,-3.44899 -1.07781,-4.31124 -0.74249,-1.38918 -1.14883,-2.40711 -2.3943,-3.05379 -1.22152,-0.67064 -1.51604,-1.00596 -3.52795,-1.00596 l -6.86206,0 0,31.63777 c 0,2.99392 0.31525,4.86925 0.97003,5.60462 0.90213,1.01316 2.31131,1.50893 4.20346,1.50893 l 1.68857,0 0,3.82679 -20.65803,0 0,-3.82679 1.72449,0 c 2.05982,0 3.52085,-0.62273 4.3831,-1.8682 0.52693,-0.76645 0.79039,-2.5149 0.79039,-5.24535 l 0,-31.63777 -5.8561,0 c -2.27538,0 -2.27608,0.16766 -3.23413,0.50298 -1.24547,0.45507 -2.3113,1.3293 -3.1975,2.62267 -0.8862,1.29337 -1.41313,3.04182 -1.58079,5.24534 l -2.98125,0 0.57483,-14.50992 z"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:73.57853699px;line-height:125%;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#333333"
+           id="path3348"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cccccscsssccccscscscscccc" />
+      </g>
+    </g>
+  </g>
+</svg>

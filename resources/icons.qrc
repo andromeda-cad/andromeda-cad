@@ -5,5 +5,11 @@
         <file>icons/symbol/pin_orient_right.svg</file>
         <file>icons/symbol/pin_orient_up.svg</file>
         <file>icons/application_icon.png</file>
+        <file>icons/symbol/tool_pin.svg</file>
+        <file>icons/symbol/tool_rect.svg</file>
+        <file>icons/symbol/tool_ellipse.svg</file>
+        <file>icons/symbol/tool_line.svg</file>
+        <file>icons/symbol/tool_polyline.svg</file>
+        <file>icons/symbol/tool_text.svg</file>
     </qresource>
 </RCC>

@@ -1028,7 +1028,10 @@ void AView::finishSelection(QPointF pos)
 
             for (int i=0;i<items.count();i++)
             {
-                if (items[i] == nullptr) continue;
+                if ( items[i] == nullptr ) continue;
+
+                // Ignore invisible items
+                if ( !items[i]->isVisible() ) continue;
 
                 items[i]->setSelected(select);
             }
@@ -1046,14 +1049,14 @@ void AView::finishSelection(QPointF pos)
             QGraphicsItem *item = scene_->itemAt(cursor_pos_, QTransform());
 
             // NO item at location, de-select all items
-            if (nullptr == item)
+            if ( nullptr == item || !item->isVisible() )
             {
                 scene_->clearSelection();
             }
             // Toggle selection with control modifier
-            else if (mods & Qt::ControlModifier)
+            else if ( mods & Qt::ControlModifier )
             {
-                item->setSelected(!item->isSelected());
+                item->setSelected( !item->isSelected() );
             }
             // Otherwise, clear selection and select this one item
             else

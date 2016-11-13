@@ -41,17 +41,17 @@ QRectF ATextItem::boundingRect() const
 {
     QRectF r;
 
-    r.setWidth(static_text_.size().width());
-    r.setHeight(static_text_.size().height());
+    r.setWidth(width_); //static_text_.size().width());
+    r.setHeight(height_); //static_text_.size().height());
 
     //TODO - Bounding Rect is calculating incorrectly
     //TODO - because it is based on the static_text_ item...
 
-#warning "Fix Me"
     //qDebug() << r.normalized();
 
     return r.normalized();
 
+    /*
 
     double w = width();
     double h = height();
@@ -72,13 +72,13 @@ QRectF ATextItem::boundingRect() const
         dy = h;
         break;
     }
-    */
 
     box.add(QPointF(w, -h));
 
     box.expand(1);
 
     return box.normalized();
+    */
 }
 
 void ATextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -105,8 +105,8 @@ void ATextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     }
     else
     {
-        painter->drawStaticText(0, 0, static_text_);
-        //painter->drawText(boundingRect(), Qt::AlignLeft, text_);
+        //painter->drawStaticText(0, 0, static_text_);
+        painter->drawText(boundingRect(), Qt::AlignLeft, text_);
     }
 
     drawBoundingBox(painter);
