@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>317</width>
+    <width>408</width>
     <height>316</height>
    </rect>
   </property>
@@ -100,7 +100,7 @@
        <string>Left</string>
       </property>
       <property name="icon">
-       <iconset resource="../../resources/icons.qrc">
+       <iconset resource="../../../resources/icons.qrc">
         <normaloff>:/icons/symbol/pin_orient_left.svg</normaloff>:/icons/symbol/pin_orient_left.svg</iconset>
       </property>
      </item>
@@ -109,7 +109,7 @@
        <string>Down</string>
       </property>
       <property name="icon">
-       <iconset resource="../../resources/icons.qrc">
+       <iconset resource="../../../resources/icons.qrc">
         <normaloff>:/icons/symbol/pin_orient_down.svg</normaloff>:/icons/symbol/pin_orient_down.svg</iconset>
       </property>
      </item>
@@ -118,7 +118,7 @@
        <string>Right</string>
       </property>
       <property name="icon">
-       <iconset resource="../../resources/icons.qrc">
+       <iconset resource="../../../resources/icons.qrc">
         <normaloff>:/icons/symbol/pin_orient_right.svg</normaloff>:/icons/symbol/pin_orient_right.svg</iconset>
       </property>
      </item>
@@ -127,7 +127,7 @@
        <string>Up</string>
       </property>
       <property name="icon">
-       <iconset resource="../../resources/icons.qrc">
+       <iconset resource="../../../resources/icons.qrc">
         <normaloff>:/icons/symbol/pin_orient_up.svg</normaloff>:/icons/symbol/pin_orient_up.svg</iconset>
       </property>
      </item>
@@ -201,7 +201,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../resources/icons.qrc"/>
+  <include location="../../../resources/icons.qrc"/>
  </resources>
  <connections>
   <connection>

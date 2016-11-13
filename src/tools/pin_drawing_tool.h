@@ -22,7 +22,7 @@ protected:
     virtual void onToolPosChanged(void);
     virtual void onKeyEvent(QKeyEvent *event);
 
-    void openPinEditor(void);
+    virtual void openEditor(void) override;
 
     ASymbolPin pin_;
 };

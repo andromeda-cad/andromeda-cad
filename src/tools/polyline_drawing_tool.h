@@ -14,7 +14,9 @@ public:
 
     bool addPoint(QPointF point);
 
-    void finalAction(void);
+    virtual void finalAction(void) override;
+
+    virtual void openEditor(void) override;
 };
 
 #endif // POLYLINE_DRAWING_TOOL_H

@@ -1,4 +1,5 @@
 #include "src/geometry/geometry.h"
+#include "src/dialogs/symbol_editor/polyline_editor_dialog.h"
 
 #include "polyline_drawing_tool.h"
 
@@ -19,6 +20,21 @@ void PolylineDrawingTool::finalAction()
     }
 
     finish();
+}
+
+void PolylineDrawingTool::openEditor()
+{
+    PolylineEditorDialog dlg;
+
+    dlg.loadSettings( polyline_.encoded() );
+
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+        AJsonObject settings = dlg.saveSettings();
+        polyline_.decode( settings );
+
+        emit updated();
+    }
 }
 
 bool PolylineDrawingTool::addPoint(QPointF point)

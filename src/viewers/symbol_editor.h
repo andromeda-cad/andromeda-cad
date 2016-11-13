@@ -24,6 +24,8 @@ public:
 
 public slots:
     //TODO these are just hacky. To be remove
+    //void drawText(void)     { startTool(&text_tool_); }
+    void drawPin(void)      { startTool(&pin_tool_); }
     void drawRect(void)     { startTool(&rect_tool_); }
     void drawEllipse(void)  { startTool(&ellipse_tool_); }
     void drawPolyline(void) { startTool(&poly_tool_); }
@@ -31,6 +33,8 @@ public slots:
     ASchematicSymbol& symbol(void) { return symbol_; }
 
     void symbolEdited(void);
+
+    virtual void editItems(void) override;
 
 protected:
     void keyPressEvent(QKeyEvent *event);

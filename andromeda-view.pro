@@ -18,7 +18,8 @@ TEMPLATE = app
 
 FORMS    += \
     ui/mainwindow.ui \
-    ui/dialogs/pin_editor.ui
+    ui/dialogs/symbol_editor/pin_editor.ui \
+    ui/dialogs/symbol_editor/polygon_editor.ui
 
 RESOURCES += \
     resources/fonts.qrc \
@@ -59,12 +60,13 @@ HEADERS += \
     src/base/object_encoding.h \
     src/base/action_keys.h \
     src/tools/pin_drawing_tool.h \
-    src/dialogs/pin_editor.h \
     src/dialogs/object_editor.h \
     src/shapes/text_item.h \
     src/viewers/symbol_viewer.h \
     src/viewers/symbol_editor.h \
-    src/main.h
+    src/main.h \
+    src/dialogs/symbol_editor/pin_editor_dialog.h \
+    src/dialogs/symbol_editor/polyline_editor_dialog.h
 
 SOURCES += \
     src/base/andromeda_object.cpp \
@@ -96,8 +98,11 @@ SOURCES += \
     src/base/object_keys.cpp \
     src/base/object_encoding.cpp \
     src/tools/pin_drawing_tool.cpp \
-    src/dialogs/pin_editor.cpp \
     src/dialogs/object_editor.cpp \
     src/shapes/text_item.cpp \
     src/viewers/symbol_editor.cpp \
-    src/viewers/symbol_viewer.cpp
+    src/viewers/symbol_viewer.cpp \
+    src/dialogs/symbol_editor/pin_editor_dialog.cpp \
+    src/dialogs/symbol_editor/polyline_editor_dialog.cpp
+
+DISTFILES +=

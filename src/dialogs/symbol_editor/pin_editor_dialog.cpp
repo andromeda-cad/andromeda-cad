@@ -1,9 +1,4 @@
-#include <QPixmap>
-#include <QtSvg/QSvgRenderer>
-#include <QIcon>
-#include <QDebug>
-
-#include "pin_editor.h"
+#include "pin_editor_dialog.h"
 
 PinEditorDialog::PinEditorDialog(QWidget *parent) : ObjectEditorDialog(parent)
 {
@@ -22,7 +17,7 @@ PinEditorDialog::PinEditorDialog(QWidget *parent) : ObjectEditorDialog(parent)
 void PinEditorDialog::reloadSettings(void)
 {
     // Extract pin data
-    pin_.decode(settings_);
+    pin_.decode( settings_ );
 
     ui.pinLabel->setText(pin_.label());
     ui.pinLength->setValue(pin_.length());

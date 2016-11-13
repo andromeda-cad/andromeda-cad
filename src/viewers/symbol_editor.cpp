@@ -89,6 +89,15 @@ void ASymbolEditor::addItems()
     qDebug() << "Adding items took" << t.elapsed() << "ms";
 }
 
+void ASymbolEditor::editItems()
+{
+    if ( isToolActive() )
+    {
+        // Instruct the active tool to open an edit dialog
+        current_tool_->openEditor();
+    }
+}
+
 void ASymbolEditor::keyPressEvent(QKeyEvent *event)
 {
     if (nullptr == event) return;

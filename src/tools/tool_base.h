@@ -83,6 +83,9 @@ public slots:
     //! Function for performing the 'final action' of the tool
     virtual void finalAction(void) {}
 
+    //! Function for opening an inline editor for the current action
+    virtual void openEditor(void) {}
+
     // Event functions
     // In addition to passing the event, the current cursor position is also provided
     void mouseEvent(QMouseEvent *event, QPointF cursorPos);

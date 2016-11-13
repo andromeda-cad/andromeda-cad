@@ -1,9 +1,9 @@
 #ifndef SYMBOL_PIN_H
 #define SYMBOL_PIN_H
 
-#include "src/drawable/drawable_primitive.h"
+#include "src/drawable/drawable_base.h"
 
-class ASymbolPin : public ADrawablePrimitive
+class ASymbolPin : public ADrawableBase
 {
     Q_OBJECT
 

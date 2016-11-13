@@ -106,6 +106,8 @@ public slots:
     virtual void selectAll(int filter = 0);
     virtual void onSelectionChanged(void) {}
 
+    virtual void editItems( void ) {}
+
 signals:
     // Called when the user cursor changes (in scene coordinates)
     void cursorPositionChanged(QPointF pos);
@@ -170,7 +172,8 @@ protected:
     void toggleViewportMode(void);
 
     // Keyboard shortcuts
-    QShortcut *m_shortcut_select_all;
+    QShortcut *shortcut_select_all_;    // Select all items
+    QShortcut *shortcut_edit_items_;
 
     virtual void configureShortcuts( void );
 

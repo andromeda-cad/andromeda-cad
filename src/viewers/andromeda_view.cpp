@@ -47,11 +47,20 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
 
 void AView::configureShortcuts()
 {
-    m_shortcut_select_all = new QShortcut(QKeySequence("Ctrl+A"), this);
-    m_shortcut_select_all->setAutoRepeat(false);
-    m_shortcut_select_all->setEnabled(true);
 
-    connect(m_shortcut_select_all, SIGNAL(activated()), this, SLOT(selectAll()));
+    //TODO - Some of these shortcuts must be configurable
+
+    shortcut_select_all_ = new QShortcut(QKeySequence("Ctrl+A"), this);
+    shortcut_select_all_->setAutoRepeat(false);
+    shortcut_select_all_->setEnabled(true);
+
+    connect(shortcut_select_all_, SIGNAL(activated()), this, SLOT(selectAll()));
+
+    shortcut_edit_items_ = new QShortcut( QKeySequence( "Ctrl+E" ), this );
+    shortcut_edit_items_->setAutoRepeat( false );
+    shortcut_edit_items_->setEnabled( true );
+
+    connect( shortcut_edit_items_, SIGNAL( activated() ), this, SLOT( editItems() ) );
 }
 
 void AView::toggleViewportMode()

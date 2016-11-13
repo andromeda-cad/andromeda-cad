@@ -1,22 +1,18 @@
-#include "polyline.h"
-#include "src/geometry/geometry.h"
-
-#include <qmath.h>
-
 #include <QPen>
 #include <QBrush>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-
 #include <QJsonArray>
-
 #include <QDebug>
+#include <qmath.h>
+
+#include "src/geometry/geometry.h"
+
+#include "polyline.h"
 
 APolyline::APolyline(QObject *parent) : ADrawablePrimitive(parent)
 {
     setObjectName(OBJECT_NAME::A_DRAWABLE_POLYLINE);
-
-    //setCacheMode(QGraphicsItem::ItemCoordinateCache);
 }
 
 void APolyline::encode(AJsonObject &data, bool hideDefaults) const
@@ -45,14 +41,13 @@ void APolyline::encode(AJsonObject &data, bool hideDefaults) const
     }
 
     data[OBJ_KEY::POINTS] = jPoints;
-
-    data[OBJ_KEY::THICKNESS] = lineWidth();
-    data[OBJ_KEY::FILLED] = isFilled();
 }
 
 void APolyline::decode(AJsonObject &data, bool undoable)
 {
     ADrawablePrimitive::decode(data, undoable);
+
+    //TODO
 }
 
 bool APolyline::allSegmentsAreStraight()
