@@ -44,9 +44,17 @@ void AEllipse::encode(AJsonObject &data, bool hideDefaults) const
 {
     ADrawablePrimitive::encode(data, hideDefaults);
 
-    //TODO only encode one radius value if the ellipse is circular
+    data[OBJ_KEY::THICKNESS] = lineWidth();
+    data[OBJ_KEY::FILL_STYLE] = fillStyle();
 
-    data.addPoint(OBJ_KEY::RADIUS, QPointF(rx(), ry()));
+    if ( rx_ == ry_ )
+    {
+        data[OBJ_KEY::RADIUS] = rx_;
+    }
+    else
+    {
+        data.addPoint(OBJ_KEY::RADIUS, QPointF(rx(), ry()));
+    }
 }
 
 QRectF AEllipse::boundingRect() const
@@ -83,7 +91,7 @@ void AEllipse::setRadius(double rx, double ry)
     if ((rx == rx_) && (ry == ry_)) return;
 
     //TODO - make this action undoable
-    //setUndoAction(OBJ_KEY::RADIUS, );
+    //addUndoAction(OBJ_KEY::RADIUS, );
 
     if (rx != 0)
         rx_ = qFabs(rx);

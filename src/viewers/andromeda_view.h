@@ -106,6 +106,8 @@ public slots:
     virtual void selectAll(int filter = 0);
     virtual void onSelectionChanged(void) {}
 
+    virtual void editItems( void ) {}
+
 signals:
     // Called when the user cursor changes (in scene coordinates)
     void cursorPositionChanged(QPointF pos);
@@ -129,17 +131,16 @@ protected:
     void drawSelectionMarquee(QPainter *painter, const QRectF &rect);
 
     // Overlay functions (drawn in viewport coordinates)
-    void drawOverlay(QPainter *painter, QRect rect);
-    void drawCursor(QPainter *painter, QRect rect);
+    virtual void drawOverlay(QPainter *painter, const QRectF &rect) const;
+    virtual void drawCursor(QPainter *painter, const QRectF &rect) const;
 
     AScene *scene_;
 
     QPointF cursorOrigin_;  // 'Origin' of the cursor
     QPointF cursor_pos_; // Current location of the cursor
-    QPointF startPos_;  // Location of the 'starting' position (used for multiple functions)
 
-    // Selection functions
-    QRectF getSelectionMarquee(void);
+    // Selection marquee (in scene coords)
+    QRectF selection_marquee_;
 
     // Tools
     AToolBase *current_tool_ = nullptr;
@@ -161,15 +162,18 @@ protected:
     void endMousePan();
 
     // Selection
+    bool selection_enabled_ = false;
     bool selection_active_ = false;
-    void startSelection();
-    void finishSelection();
+    void startSelection(QPointF pos);
+    void updateSelection(QPointF pos);
+    void finishSelection(QPointF pos);
     void cancelSelection();
 
     void toggleViewportMode(void);
 
     // Keyboard shortcuts
-    QShortcut *m_shortcut_select_all;
+    QShortcut *shortcut_select_all_;    // Select all items
+    QShortcut *shortcut_edit_items_;
 
     virtual void configureShortcuts( void );
 

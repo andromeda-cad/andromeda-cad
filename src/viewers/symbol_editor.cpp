@@ -9,23 +9,26 @@
 #include "src/shapes/text_item.h"
 #include "src/symbol/symbol_pin.h"
 
-#include "symbol_editor_view.h"
+#include "symbol_editor.h"
 
-SymbolEditorView::SymbolEditorView(QWidget *parent) : AView(parent)
+ASymbolEditor::ASymbolEditor(QWidget *parent) : ASymbolViewer(parent)
 {
     addTool(&poly_tool_);
     addTool(&rect_tool_);
     addTool(&ellipse_tool_);
     addTool(&pin_tool_);
 
-    scene_->addItem(&symbol_);
+    // Test function to add thousands of items to the scene
+    // (to test rendering performance)
+    //addItems();
 
-    setCacheMode(QGraphicsView::CacheBackground);
+    // Enable selection
+    selection_enabled_ = true;
 
-    addItems();
+    connect( &symbol_, SIGNAL( edited() ), this, SLOT( symbolEdited() ) );
 }
 
-void SymbolEditorView::addItems()
+void ASymbolEditor::addItems()
 {
 
 #define TEST_TEXT
@@ -86,7 +89,16 @@ void SymbolEditorView::addItems()
     qDebug() << "Adding items took" << t.elapsed() << "ms";
 }
 
-void SymbolEditorView::keyPressEvent(QKeyEvent *event)
+void ASymbolEditor::editItems()
+{
+    if ( isToolActive() )
+    {
+        // Instruct the active tool to open an edit dialog
+        current_tool_->openEditor();
+    }
+}
+
+void ASymbolEditor::keyPressEvent(QKeyEvent *event)
 {
     if (nullptr == event) return;
 
@@ -156,7 +168,7 @@ void SymbolEditorView::keyPressEvent(QKeyEvent *event)
 }
 
 
-void SymbolEditorView::onToolFinished(AToolBase *toolPtr)
+void ASymbolEditor::onToolFinished(AToolBase *toolPtr)
 {
     if (nullptr == toolPtr)
         return;
@@ -168,6 +180,7 @@ void SymbolEditorView::onToolFinished(AToolBase *toolPtr)
     // Pointer comparison fun
     if (pointer == &poly_tool_)
     {
+        qDebug() << "adding new poly";
         APolyline *line = new APolyline();
 
         poly_tool_.getPolyline(*line);
@@ -178,6 +191,8 @@ void SymbolEditorView::onToolFinished(AToolBase *toolPtr)
     }
     else if (pointer == &ellipse_tool_)
     {
+        qDebug() << "adding new ellipse";
+
         AEllipse *ell = new AEllipse();
 
         ellipse_tool_.getEllipse(*ell);
@@ -189,6 +204,7 @@ void SymbolEditorView::onToolFinished(AToolBase *toolPtr)
     }
     else if (pointer == &rect_tool_)
     {
+        qDebug() << "adding new rect";
         APolyline *line = new APolyline();
 
         rect_tool_.getPolyline(*line);
@@ -199,8 +215,14 @@ void SymbolEditorView::onToolFinished(AToolBase *toolPtr)
     }
     else if (pointer == &pin_tool_)
     {
+        qDebug() << "adding new pin";
         symbol_.addPin(pin_tool_.getPin());
     }
 
     //qDebug() << symbol_.encodedString();
+}
+
+void ASymbolEditor::symbolEdited()
+{
+    qDebug() << "symbol was edited";
 }

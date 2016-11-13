@@ -34,7 +34,7 @@ void AndromedaObject::decode(AJsonObject &data, bool undoable)
 }
 
 /**
- * @brief AndromedaObject::setUndoAction
+ * @brief AndromedaObject::addUndoAction
  * Apply an invertible operation for a single JSON key to the undo stack
  * This allows for granular UNDO / REDO operations to be pushed to the stack
  * e.g. change a pin label from "Pin_A" to "Pin_B", only the LABEL value will be pushed
@@ -48,7 +48,7 @@ void AndromedaObject::decode(AJsonObject &data, bool undoable)
  * @param before is the value of the key BEFORE the change
  * @param after is the value of the key AFTER tha change
  */
-void AndromedaObject::setUndoAction(QString title, QString key, QJsonValue before, QJsonValue after)
+void AndromedaObject::addUndoAction(QString title, QString key, QJsonValue before, QJsonValue after)
 {
     if (!undo_enabled_) return;
 
@@ -71,13 +71,13 @@ void AndromedaObject::setUndoAction(QString title, QString key, QJsonValue befor
 }
 
 /**
- * @brief AndromedaObject::setUndoAction
+ * @brief AndromedaObject::addUndoAction
  * Apply an invertible action, but infer the "before" state rather than stating it
  * @param title is the title of this action
  * @param key is the JSON key for the data being changed
  * @param json is the new JSON value
  */
-void AndromedaObject::setUndoAction(QString title, QString key, QJsonValue value)
+void AndromedaObject::addUndoAction(QString title, QString key, QJsonValue value)
 {
     if (!undo_enabled_) return;
 
@@ -90,7 +90,7 @@ void AndromedaObject::setUndoAction(QString title, QString key, QJsonValue value
     // Exctrac the current value for the provided key
     QJsonValue jValueBefore = jData.value(key);
 
-    setUndoAction(title, key, jValueBefore, value);
+    addUndoAction(title, key, jValueBefore, value);
 
     */
 }
@@ -177,6 +177,34 @@ void AndromedaObject::copyTo(AndromedaObject *other)
 }
 
 /**
+ * @brief AndromedaObject::setUndoEnabled
+ * Enable or disable the undo stack for this object
+ * Any child objects are also updated in a similar fashion
+ * @param enabled
+ */
+void AndromedaObject::setUndoEnabled(bool enabled)
+{
+    QObjectList childs = children();
+
+    AndromedaObject *child;
+
+    // Recursion! Set the undo status of all child objects
+    for ( int i=0; i<childs.count(); i++ )
+    {
+        child = static_cast<AndromedaObject*>( childs.at(i) );
+
+        if ( nullptr == child ) continue;
+
+        qDebug() << "child" << i << child->objectName();
+        child->setUndoEnabled( enabled );
+    }
+
+    undo_enabled_ = enabled;
+
+    qDebug() << "undo" << objectName() << enabled;
+}
+
+/**
  * @brief AndromedaObject::undo
  * (Attempt to) undo the item at current stack index
  * @return
@@ -212,4 +240,31 @@ bool AndromedaObject::redo()
     undo_enabled_ = true;
 
     return true;
+}
+
+/**
+ * @brief AndromedaObject::signalEdited should be called
+ * whenever a parameter is changed.
+ * If the 'pass' argument is true, the object will
+ * attempt to pass the edited signal up to its parent
+ * Otherwise, it will emit an 'edited()' signal
+ */
+void AndromedaObject::signalEdited(bool pass)
+{
+    if ( !pass )
+    {
+        emit edited();
+        return;
+    }
+
+    AndromedaObject *par = static_cast<AndromedaObject*>( parent() );
+
+    if ( nullptr == par )
+    {
+        emit edited();
+    }
+    else
+    {
+        par->signalEdited( true );
+    }
 }

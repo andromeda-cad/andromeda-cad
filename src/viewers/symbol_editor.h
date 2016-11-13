@@ -1,5 +1,5 @@
-#ifndef SYMBOL_EDITOR_VIEW_H
-#define SYMBOL_EDITOR_VIEW_H
+#ifndef SYMBOL_EDITOR_H
+#define SYMBOL_EDITOR_H
 
 #include "src/shapes/polyline.h"
 #include "src/shapes/ellipse.h"
@@ -11,24 +11,30 @@
 
 #include "src/symbol/schematic_symbol.h"
 
-#include "andromeda_view.h"
+#include "symbol_viewer.h"
 
-class SymbolEditorView : public AView
+class ASymbolEditor : public ASymbolViewer
 {
     Q_OBJECT
 
 public:
-    SymbolEditorView(QWidget * parent = 0);
+    ASymbolEditor(QWidget * parent = 0);
 
     void addItems(void);
 
 public slots:
     //TODO these are just hacky. To be remove
+    //void drawText(void)     { startTool(&text_tool_); }
+    void drawPin(void)      { startTool(&pin_tool_); }
     void drawRect(void)     { startTool(&rect_tool_); }
     void drawEllipse(void)  { startTool(&ellipse_tool_); }
     void drawPolyline(void) { startTool(&poly_tool_); }
 
     ASchematicSymbol& symbol(void) { return symbol_; }
+
+    void symbolEdited(void);
+
+    virtual void editItems(void) override;
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -46,5 +52,5 @@ protected:
     ASchematicSymbol symbol_;
 };
 
-#endif // SYMBOL_EDITOR_VIEW_H
+#endif // SYMBOL_EDITOR_H
 

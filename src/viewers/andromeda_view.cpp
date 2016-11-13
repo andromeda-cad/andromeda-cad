@@ -47,11 +47,20 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
 
 void AView::configureShortcuts()
 {
-    m_shortcut_select_all = new QShortcut(QKeySequence("Ctrl+A"), this);
-    m_shortcut_select_all->setAutoRepeat(false);
-    m_shortcut_select_all->setEnabled(true);
 
-    connect(m_shortcut_select_all, SIGNAL(activated()), this, SLOT(selectAll()));
+    //TODO - Some of these shortcuts must be configurable
+
+    shortcut_select_all_ = new QShortcut(QKeySequence("Ctrl+A"), this);
+    shortcut_select_all_->setAutoRepeat(false);
+    shortcut_select_all_->setEnabled(true);
+
+    connect(shortcut_select_all_, SIGNAL(activated()), this, SLOT(selectAll()));
+
+    shortcut_edit_items_ = new QShortcut( QKeySequence( "Ctrl+E" ), this );
+    shortcut_edit_items_->setAutoRepeat( false );
+    shortcut_edit_items_->setEnabled( true );
+
+    connect( shortcut_edit_items_, SIGNAL( activated() ), this, SLOT( editItems() ) );
 }
 
 void AView::toggleViewportMode()
@@ -251,12 +260,12 @@ void AView::setCursorPos(QPointF pos, bool panPastEdges)
         scroll(dx,dy);
     }
 
-    QPoint screen_pos = mapFromScene(cursor_pos_);
+    QPoint screenPos = mapFromScene(cursor_pos_);
 
     // Update old cursor pos
     QRectF invalid = mapRectToScene(QRect(
-                   screen_pos.x() - 12,
-                   screen_pos.y() - 12,
+                   screenPos.x() - 12,
+                   screenPos.y() - 12,
                    24,
                    24));
 
@@ -395,9 +404,12 @@ void AView::keyPressEvent(QKeyEvent *event)
     }
 
     // Forward the event through to the selected tool
-    sendKeyEventToTool(event);
+    if ( isToolActive() )
+    {
+        sendKeyEventToTool( event );
+    }
 
-    switch (event->key())
+    switch ( event->key() )
     {
 
     case Qt::Key_C: //TODO - remove this, just a test
@@ -416,13 +428,16 @@ void AView::keyPressEvent(QKeyEvent *event)
     }
     else
     {
-        QGraphicsView::keyPressEvent(event);
+        QGraphicsView::keyPressEvent( event );
     }
 }
 
 void AView::keyReleaseEvent(QKeyEvent *event)
 {
-    sendKeyEventToTool(event);
+    if ( isToolActive() )
+    {
+        sendKeyEventToTool( event );
+    }
 
     QGraphicsView::keyReleaseEvent(event);
 }
@@ -437,41 +452,61 @@ void AView::wheelEvent(QWheelEvent *event)
 {
     if (scene_ == NULL || nullptr == event) return;
 
-    float zoom = (float) event->delta() * 0.01f;
+    // Extract mouse position BEFORE scrolling
+    QPoint mousePos = mapFromGlobal( cursor().pos() );
 
-    // Account for 'negative' zoom
-    if (zoom < 0)
-        zoom = -1.0 / zoom;
+    QPointF scenePos = mapToScene( mousePos );
 
-    scaleRelative(zoom);
+    int mods = (int) event->modifiers();
 
-    // Re-move the cursor to the mouse position
-    QPoint mousePos = mapFromGlobal(cursor().pos());
+    int delta = event->delta();
 
-    setCursorPos(mapToScene(mousePos));
+    if ( mods & Qt::ShiftModifier )
+    {
+        scroll( 0, delta/10 );
+    }
+    else if ( mods & Qt::ControlModifier )
+    {
+        scroll( delta/10, 0 );
+    }
+    else
+    {
+        float zoom = (float) event->delta() * 0.01f;
+
+        // Account for 'negative' zoom
+        if ( zoom < 0 )
+            zoom = -1.0 / zoom;
+
+        scaleRelative(zoom);
+    }
+
+    setCursorPos( scenePos );
+
+    if ( selection_active_ )
+    {
+        updateSelection( scenePos );
+    }
 }
 
 void AView::mousePressEvent(QMouseEvent *event)
 {
     if (event == NULL || nullptr == scene_) return;
 
-    QPointF scenePos = mapToScene(event->pos());
+    QPointF scenePos = mapToScene( event->pos() );
 
-    setCursorPos(scenePos);
+    setCursorPos( scenePos );
 
-    sendMouseEventToTool(event);
-
-    switch (event->button())
+    if ( isToolActive() )
     {
-    case Qt::MiddleButton:
-        setCursor(QCursor(Qt::OpenHandCursor));
-        break;
-    case Qt::LeftButton:
-        startPos_ = cursor_pos_;
+        sendMouseEventToTool( event );
+    }
 
-        if (!isToolActive())
+    switch ( event->button() )
+    {
+    case Qt::LeftButton:
+        if ( !isToolActive() )
         {
-            startSelection();
+            startSelection( scenePos );
         }
         break;
 
@@ -482,25 +517,35 @@ void AView::mousePressEvent(QMouseEvent *event)
 
 void AView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    sendMouseEventToTool(event);
+    if ( isToolActive() )
+    {
+        sendMouseEventToTool( event );
+    }
 }
 
 void AView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (scene_ == NULL || nullptr == event) return;
 
+    QPointF scenePos = mapToScene( event->pos() );
+
     // Left mouse button is used for selection
-    if (mouse_pan_active_ &&  event->button() == Qt::MiddleButton)
+    if ( event->button() == Qt::MiddleButton )
     {
+        if ( !mouse_pan_active_ )
+        {
+            centerOn( mapToScene( event->pos() ) );
+        }
+
         endMousePan();
     }
-    else if (selection_active_ && event->button() == Qt::LeftButton)
+    else if ( selection_active_ && event->button() == Qt::LeftButton )
     {
-        finishSelection();
+        finishSelection( scenePos );
 
         update();
     }
-    else
+    else if ( isToolActive() )
     {
         sendMouseEventToTool(event);
     }
@@ -516,19 +561,21 @@ void AView::mouseMoveEvent(QMouseEvent *event)
     // Grab the mouse position
     QPoint mousePos = event->pos();
 
-    setCursorPos(mapToScene(mousePos));
+    QPointF scenePos = mapToScene( event->pos() );
+
+    setCursorPos( mapToScene( mousePos ) );
 
     // Check for panning event
     if (event->buttons() & Qt::MiddleButton)
     {
-        if (!mouse_pan_active_)
+        if ( !mouse_pan_active_ )
         {
             startMousePan();
         }
         else
         {
             QPoint delta = mousePos - lastMousePos;
-            scroll(delta);
+            scroll( delta );
         }
 
         // Set the panning flag
@@ -537,10 +584,18 @@ void AView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
+    if ( selection_active_ )
+    {
+        updateSelection( scenePos );
+    }
+
     endMousePan();
 
     // Forward the event through to the active tool
-    sendMouseEventToTool(event);
+    if ( isToolActive() )
+    {
+        sendMouseEventToTool(event);
+    }
 
     QGraphicsView::mouseMoveEvent(event);
 }
@@ -566,51 +621,32 @@ void AView::endMousePan()
  */
 void AView::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    if (nullptr == painter) return;
+    if ( nullptr == painter ) return;
 
     // Draw the active tool
-    if (isToolActive())
+    if ( isToolActive() )
     {
         current_tool_->paint(painter, rect);
+
+        drawCursor( painter, rect );
     }
 
-    else if (selection_active_)
+    else if ( selection_enabled_ && selection_active_ )
     {
-        drawSelectionMarquee(painter, rect);
+        drawSelectionMarquee( painter, rect );
     }
-
-    // Draw the cursor
-    painter->save();
-    painter->resetTransform();
-    QPoint pos = mapFromScene(cursor_pos_);
-
-    QPoint dx(10, 0);
-    QPoint dy(0, 10);
-
-    QPen pen;
-    pen.setWidth(2);
-    pen.setColor(QColor(150,200,50));
-
-    painter->drawLine(pos - dx, pos + dx);
-    painter->drawLine(pos - dy, pos + dy);
-
-    painter->fillRect(pos.x() - 10, pos.y() - 10, 20, 20, QColor(100, 100, 100, 100));
-
-    painter->restore();
 }
 
 void AView::drawSelectionMarquee(QPainter *painter, const QRectF &rect)
 {
     if (nullptr == painter) return;
 
-    QRectF selection = getSelectionMarquee();
-
     // Don't paint if off-screen
-    if (!selection.intersects(rect)) return;
+    if (!selection_marquee_.normalized().intersects(rect)) return;
 
     QPen marqueePen(QColor(0,255,200,200));
 
-    bool crossing = selection.width() < 0;
+    bool crossing = selection_marquee_.width() < 0;
 
     marqueePen.setCapStyle(Qt::RoundCap);
     marqueePen.setJoinStyle(Qt::RoundJoin);
@@ -619,22 +655,13 @@ void AView::drawSelectionMarquee(QPainter *painter, const QRectF &rect)
 
     marqueePen.setCosmetic(true);
 
-    QBrush marqueeBrush(crossing? QColor(0,120,50,50) : QColor(0,50,120,50));
+    QBrush marqueeBrush(crossing ? QColor(0,120,50,50) : QColor(0,50,120,50));
 
     painter->setPen(marqueePen);
     painter->setBrush(marqueeBrush);
 
-    painter->drawRect(selection.normalized());
+    painter->drawRect(selection_marquee_);
 }
-
-QRectF AView::getSelectionMarquee()
-{
-    return QRectF(startPos_.x(),
-                  startPos_.y(),
-                  cursor_pos_.x() - startPos_.x(),
-                  cursor_pos_.y() - startPos_.y());
-}
-
 
 void AView::paintEvent(QPaintEvent *event)
 {
@@ -657,63 +684,43 @@ void AView::paintEvent(QPaintEvent *event)
     paint_mutex_.unlock();
 }
 
-void AView::drawOverlay(QPainter *painter, QRect rect)
+/**
+ * @brief AView::drawOverlay VIRTUAL
+ * Draw an overlay over the scene
+ * Override to implement in a subclass
+ * @param painter
+ * @param rect
+ */
+void AView::drawOverlay(QPainter *painter, const QRectF &rect) const
 {
-    // Re-implement this to draw an overlayover the scene
-
-    Q_UNUSED(painter);
-    Q_UNUSED(rect);
+    Q_UNUSED( painter );
+    Q_UNUSED( rect );
 }
 
-void AView::drawCursor(QPainter *painter, QRect rect)
+void AView::drawCursor(QPainter *painter, const QRectF &rect) const
 {
     if (nullptr == painter) return;
 
-    QPoint viewPos = mapFromScene(cursor_pos_);
-    int x = viewPos.x();
-    int y = viewPos.y();
+    painter->save();
+    painter->resetTransform();
 
-    QPen p;
-    p.setWidth(1);
+    QPoint pos = mapFromScene( cursor_pos_ );
 
-    painter->setPen(p);
+#define CURSOR_SIZE 10 //TODO - Make configurable?
 
-    switch (cursorStyle_)
-    {
-    default:
-    case VIEW_CURSOR_NONE:
-        return;
+    QPoint dx( CURSOR_SIZE, 0 );
+    QPoint dy( 0, CURSOR_SIZE );
 
-    // Draw a small cross at the cursor position
-    case VIEW_CURSOR_CROSS_SMALL:
-#define CURSOR 10
-        // Is the cursor position in view?
-        if ((viewPos.x() > -CURSOR) &&
-            (viewPos.x() < (width() + CURSOR)) &&
-            (viewPos.y() > -CURSOR) &&
-            (viewPos.y() < (height() + CURSOR)))
-        {
-            painter->drawLine(x-CURSOR,y,x+CURSOR,y);
-            painter->drawLine(x,y-CURSOR,x,y+CURSOR);
-        }
-        break;
+    QPen pen( QColor( 0, 0, 0 ) );
 
-    case VIEW_CURSOR_CROSS_LARGE:
+    painter->setPen( pen );
 
-        // Draw horizontal line
-        painter->drawLine(rect.left() - 1,
-                          y,
-                          rect.right() + 1,
-                          y);
+    painter->drawLine( pos - dx, pos + dx );
+    painter->drawLine( pos - dy, pos + dy );
 
-        // Draw vertical line
-        painter->drawLine(x,
-                          rect.top() - 1,
-                          x,
-                          rect.bottom() + 1);
+    painter->restore();
 
-        break;
-    }
+    painter->setClipRect( rect );
 }
 
 /**
@@ -952,9 +959,28 @@ void AView::setCursorStyle(unsigned char style)
     }
 }
 
-void AView::startSelection()
+void AView::startSelection(QPointF pos)
 {
+    if ( !selection_enabled_ ) return;
+
+    selection_marquee_.setTopLeft( pos );
+
+    updateSelection( pos );
+
     selection_active_ = true;
+}
+
+void AView::updateSelection(QPointF pos)
+{
+    QRectF toUpdate = selection_marquee_;
+
+    selection_marquee_.setBottomRight( pos );
+
+    toUpdate = toUpdate.united( selection_marquee_ );
+
+    toUpdate.adjust(-1, -1, 1, 1);
+
+    scene_->update( toUpdate );
 }
 
 void AView::cancelSelection()
@@ -962,19 +988,19 @@ void AView::cancelSelection()
     selection_active_ = false;
 }
 
-void AView::finishSelection()
+void AView::finishSelection(QPointF pos)
 {
-    if (selection_active_)
+    updateSelection( pos );
+
+    if ( selection_enabled_ && selection_active_ )
     {
         int mods = (int) QApplication::keyboardModifiers();
-
-        QRectF selection = getSelectionMarquee();
 
         QPointF pixels = unitsPerPixel();
 
         // Ignore 'small' selections
-        bool validSelection = ((qAbs(selection.width()  / pixels.x()) > 5) &&
-                               (qAbs(selection.height() / pixels.y()) > 5));
+        bool validSelection = ((qAbs(selection_marquee_.width()  / pixels.x()) > 5) &&
+                               (qAbs(selection_marquee_.height() / pixels.y()) > 5));
 
         // Rectangular selection
         if (validSelection)
@@ -989,17 +1015,16 @@ void AView::finishSelection()
             blockSignals(true);
 
             // Selection drawn left-to-right requires full selection
-            if (selection.width() > 0)
+            if (selection_marquee_.width() > 0)
             {
-                items = scene_->items(selection, Qt::ContainsItemShape);
+                items = scene_->items(selection_marquee_.normalized(), Qt::ContainsItemShape);
             }
             else
             {
-                items = scene_->items(selection.normalized(), Qt::IntersectsItemShape);
+                items = scene_->items(selection_marquee_.normalized(), Qt::IntersectsItemShape);
             }
 
             bool select = true;
-
 
             if (mods & Qt::ControlModifier)
             {
@@ -1012,7 +1037,10 @@ void AView::finishSelection()
 
             for (int i=0;i<items.count();i++)
             {
-                if (items[i] == nullptr) continue;
+                if ( items[i] == nullptr ) continue;
+
+                // Ignore invisible items
+                if ( !items[i]->isVisible() ) continue;
 
                 items[i]->setSelected(select);
             }
@@ -1030,14 +1058,14 @@ void AView::finishSelection()
             QGraphicsItem *item = scene_->itemAt(cursor_pos_, QTransform());
 
             // NO item at location, de-select all items
-            if (nullptr == item)
+            if ( nullptr == item || !item->isVisible() )
             {
                 scene_->clearSelection();
             }
             // Toggle selection with control modifier
-            else if (mods & Qt::ControlModifier)
+            else if ( mods & Qt::ControlModifier )
             {
-                item->setSelected(!item->isSelected());
+                item->setSelected( !item->isSelected() );
             }
             // Otherwise, clear selection and select this one item
             else

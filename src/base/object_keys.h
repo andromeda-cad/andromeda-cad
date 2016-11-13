@@ -16,7 +16,7 @@ namespace OBJ_KEY {
 const QString ITEM_LAYER = "layer";
 
 // Graphics options
-const QString FILLED = "filled";
+const QString FILL_STYLE = "fillStyle";
 
 // Polygons
 const QString POINTS = "points";

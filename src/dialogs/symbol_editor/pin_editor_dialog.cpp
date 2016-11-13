@@ -1,12 +1,12 @@
-#include "pin_editor.h"
+#include "pin_editor_dialog.h"
 
 PinEditorDialog::PinEditorDialog(QWidget *parent) : ObjectEditorDialog(parent)
 {
-    pin_.setUndoEnabled(false);
+    pin_.setUndoEnabled( false );
 
-    ui.setupUi(this);
+    ui.setupUi( this );
 
-    setWindowTitle("Pin Editor");
+    setWindowTitle( "Pin Properties" );
 
     reloadSettings();
 
@@ -17,7 +17,7 @@ PinEditorDialog::PinEditorDialog(QWidget *parent) : ObjectEditorDialog(parent)
 void PinEditorDialog::reloadSettings(void)
 {
     // Extract pin data
-    pin_.decode(settings_);
+    pin_.decode( settings_ );
 
     ui.pinLabel->setText(pin_.label());
     ui.pinLength->setValue(pin_.length());

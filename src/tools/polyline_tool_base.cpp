@@ -22,7 +22,10 @@ void PolylineToolBase::paintTool(QPainter *painter, const QRectF &rect)
 {
     Q_UNUSED(rect);
 
-    painter->setPen(tool_pen_);
+    QPen p( SYMBOL_LINE_COLOR );
+    p.setWidthF( polyline_.lineWidth() );
+
+    painter->setPen( p );
     painter->setBrush(Qt::NoBrush);
 
     if (polyline_.shape().intersects(rect))

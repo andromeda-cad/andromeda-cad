@@ -1,17 +1,17 @@
-#include "symbol_pin.h"
+#include <QDebug>
 
 #include "src/geometry/bounding_box.h"
 
-#include <QDebug>
+#include "symbol_pin.h"
 
-ASymbolPin::ASymbolPin(QObject *parent) : ADrawablePrimitive(parent)
+ASymbolPin::ASymbolPin(QObject *parent) : ADrawableBase(parent)
 {
     setObjectName(OBJECT_NAME::A_DRAWABLE_SYMBOL_PIN);
 }
 
 void ASymbolPin::encode(AJsonObject &data, bool hideDefaults) const
 {
-    ADrawablePrimitive::encode(data, hideDefaults);
+    ADrawableBase::encode(data, hideDefaults);
 
     data[OBJ_KEY::LABEL] = label();
     data[OBJ_KEY::LENGTH] = length();
@@ -19,7 +19,7 @@ void ASymbolPin::encode(AJsonObject &data, bool hideDefaults) const
 
 void ASymbolPin::decode(AJsonObject &data, bool undoable)
 {
-    ADrawablePrimitive::decode(data, undoable);
+    ADrawableBase::decode(data, undoable);
 
     QString text;
     double d;

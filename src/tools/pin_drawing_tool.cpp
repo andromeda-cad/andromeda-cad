@@ -1,7 +1,7 @@
 #include <QDebug>
 #include <QDialog>
 
-#include "src/dialogs/pin_editor.h"
+#include "src/dialogs/symbol_editor/pin_editor_dialog.h"
 
 #include "pin_drawing_tool.h"
 
@@ -62,18 +62,18 @@ void PinDrawingTool::onToolPosChanged()
     emit updated();
 }
 
-void PinDrawingTool::openPinEditor()
+void PinDrawingTool::openEditor()
 {
     PinEditorDialog dlg;
 
     // Encode pin settings and pass to the dialog
-    dlg.loadSettings(pin_.encoded());
+    dlg.loadSettings( pin_.encoded() );
 
-    if (dlg.exec() == QDialog::Accepted)
+    if ( dlg.exec() == QDialog::Accepted )
     {
         // Load the settings from the editor
-        AJsonObject pinSettings = dlg.saveSettings();
-        pin_.decode(pinSettings);
+        AJsonObject settings = dlg.saveSettings();
+        pin_.decode( settings );
 
         emit updated();
     }
@@ -95,9 +95,11 @@ void PinDrawingTool::onKeyEvent(QKeyEvent *event)
             pin_.rotate(mods & Qt::ShiftModifier);
             emit updated();
             break;
-        case Qt::Key_E:
-            openPinEditor();
-            break;
+            //TODO - Generecise the "edit" key and make it a shortcut
+        /*
+         * case Qt::Key_E:
+            openEditor();
+            break; */
         default:
             break;
         }

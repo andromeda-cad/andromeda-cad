@@ -7,9 +7,19 @@ ASchematicSymbol::ASchematicSymbol(QObject *parent) : ADrawableComplex(parent)
 {
     setObjectName(OBJECT_NAME::A_SCHEMATIC_SYMBOL);
 
+    // Disable undo until initialization is completed
+    setUndoEnabled( false );
+
+    defaultValues();
+
+    setUndoEnabled( true );
+}
+
+void ASchematicSymbol::defaultValues()
+{
     //Initial values
-    setName("CMP");
-    setRef("R?");
+    setName( "CMP 1234567890" );
+    setRef( "R? 1IiL" );
 
     ref_text_.setParent(this);
     ref_text_.setParentItem(this);
@@ -18,6 +28,7 @@ ASchematicSymbol::ASchematicSymbol(QObject *parent) : ADrawableComplex(parent)
     name_text_.setParent(this);
     name_text_.setParentItem(this);
     name_text_.setPos(0,-50);
+
 }
 
 ASchematicSymbol::~ASchematicSymbol()

@@ -47,6 +47,15 @@ public:
         INVALID,
     };
 
+    /**
+     * @brief The LOCK enum describes the various "lock" modes avaiable
+     * for a drawable item.
+     */
+    enum class LOCK : int {
+        UNLOCKED = 0,
+        LOCKED = 0xF,
+    };
+
     // JSON params
     virtual void decode(AJsonObject &data, bool undoable = true) override;
     virtual void encode(AJsonObject &data, bool hideDefaults = false) const override;
@@ -81,6 +90,8 @@ public slots:
     void setOrientation(unsigned int orientation);
     void rotate(bool ccw = true);
 
+    int getLock( void ) { return lock_; }
+
 signals:
     void layerChanged(int layer);
 
@@ -90,6 +101,9 @@ protected:
     QPen bounding_box_pen_;
 
     int layer_ = (int)  LAYER_ID::NONE;
+
+    //!
+    int lock_ = (int) LOCK::UNLOCKED;
 
     unsigned int orientation_ = (int) Orientation::LEFT;
 };

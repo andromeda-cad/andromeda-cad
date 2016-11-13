@@ -18,10 +18,11 @@ public:
     ATextItem(QObject *parent = 0);
     virtual ATextItem *clone(void) override { return makeClone<ATextItem>(); }
 
-    enum class Alignment : int {
-        LEFT = 0,
-        RIGHT,
-        CENTER
+    enum Alignment
+    {
+        LEFT  = 0,
+        RIGHT = 0x01,
+        CENTER = 0x02,
     };
 
     // Painter functions

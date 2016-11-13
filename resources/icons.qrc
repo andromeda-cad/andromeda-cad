@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/generic/action_redo.svg</file>
+        <file>icons/generic/action_undo.svg</file>
+        <file>icons/generic/zoom_fit.svg</file>
+        <file>icons/generic/zoom_in.svg</file>
+        <file>icons/generic/zoom_out.svg</file>
+        <file>icons/generic/zoom_rect.svg</file>
+        <file>icons/symbol/pin_orient_down.svg</file>
+        <file>icons/symbol/pin_orient_left.svg</file>
+        <file>icons/symbol/pin_orient_right.svg</file>
+        <file>icons/symbol/pin_orient_up.svg</file>
+        <file>icons/symbol/tool_ellipse.svg</file>
+        <file>icons/symbol/tool_line.svg</file>
+        <file>icons/symbol/tool_pin.svg</file>
+        <file>icons/symbol/tool_polyline.svg</file>
+        <file>icons/symbol/tool_rect.svg</file>
+        <file>icons/symbol/tool_text.svg</file>
+    </qresource>
+</RCC>

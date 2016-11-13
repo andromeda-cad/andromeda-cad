@@ -39,6 +39,7 @@ public slots:
     virtual void updateBounds(void) {}
     virtual void updateShape(void) {}
 
+    virtual void defaultValues(void) {}
 
 protected:
     int flip_ = (int) Flip::NONE;

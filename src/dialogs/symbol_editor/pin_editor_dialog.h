@@ -4,9 +4,9 @@
 #include <QDialog>
 
 #include "src/symbol/symbol_pin.h"
+#include "src/dialogs/object_editor.h"
 
 #include "ui_pin_editor.h"
-#include "object_editor.h"
 
 //TODO - This could be a base class for a general-purpose object editor dialog
 //
@@ -19,8 +19,8 @@ public:
     PinEditorDialog(QWidget *parent = 0);
 
 public slots:
-    virtual AJsonObject saveSettings(void);
-    virtual void reloadSettings(void);
+    virtual AJsonObject saveSettings(void) override;
+    virtual void reloadSettings(void) override;
 
 protected:
     // Store a local pin to edit

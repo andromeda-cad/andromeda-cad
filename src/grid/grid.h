@@ -5,7 +5,7 @@
 
 //TODO - abstract this to allow polar grids
 
-const double GRID_MAJOR_TICK_DEFAULT = 5;
+const double GRID_MAJOR_TICK_DEFAULT = 10;
 const double GRID_MINOR_TICK_DEFAULT = 0;
 
 const double GRID_TICK_MAX = 100.0f;
