@@ -5,6 +5,8 @@
 
 #include "src/base/object_encoding.h"
 
+#include "src/base/andromeda_object.h"
+
 class ObjectEditorDialog : public QDialog
 {
     Q_OBJECT
@@ -14,6 +16,8 @@ public:
 
 public slots:
     void loadSettings(AJsonObject settings);
+
+    bool editObject( AndromedaObject *object );
 
     virtual AJsonObject saveSettings(void) = 0;
 

@@ -38,13 +38,8 @@ void RectDrawingTool::openEditor()
 
     dlg.setWindowTitle( tr("Rectangle Properties") );
 
-    dlg.loadSettings( polyline_.encoded() );
-
-    if ( dlg.exec() == QDialog::Accepted )
+    if ( dlg.editObject( &polyline_ ) )
     {
-        AJsonObject settings = dlg.saveSettings();
-        polyline_.decode( settings );
-
         emit updated();
     }
 }

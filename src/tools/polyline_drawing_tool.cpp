@@ -28,13 +28,8 @@ void PolylineDrawingTool::openEditor()
 
     dlg.setWindowTitle( tr( "Polygon Properties" ) );
 
-    dlg.loadSettings( polyline_.encoded() );
-
-    if ( dlg.exec() == QDialog::Accepted )
+    if ( dlg.editObject( &polyline_ ) )
     {
-        AJsonObject settings = dlg.saveSettings();
-        polyline_.decode( settings );
-
         emit updated();
     }
 }

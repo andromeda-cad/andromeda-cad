@@ -66,15 +66,8 @@ void PinDrawingTool::openEditor()
 {
     PinEditorDialog dlg;
 
-    // Encode pin settings and pass to the dialog
-    dlg.loadSettings( pin_.encoded() );
-
-    if ( dlg.exec() == QDialog::Accepted )
+    if ( dlg.editObject( &pin_ ) )
     {
-        // Load the settings from the editor
-        AJsonObject settings = dlg.saveSettings();
-        pin_.decode( settings );
-
         emit updated();
     }
 }
