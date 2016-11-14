@@ -16,10 +16,10 @@ public:
 
     virtual bool addPoint(QPointF point) { Q_UNUSED(point); return false; }
 
-    void nextAction(void);
+    virtual void nextAction(void) override;
 
-    void paintTool(QPainter *painter, const QRectF &rect);
-    void paintHints(QPainter *painter, const QRectF &rect);
+    virtual void paintTool(QPainter *painter, const QRectF &rect) override;
+    virtual void paintHints(QPainter *painter, const QRectF &rect) override;
 
 protected:
     APolyline polyline_;
@@ -28,6 +28,9 @@ protected:
     bool force_closed_ = false;
 
     void onReset(void);
+
+    QPen pen(void);
+    QBrush brush(void);
 
 };
 

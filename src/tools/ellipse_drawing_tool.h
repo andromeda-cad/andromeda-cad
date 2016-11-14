@@ -12,14 +12,15 @@ class EllipseDrawingTool : public AToolBase
 public:
     EllipseDrawingTool(QObject *parent = 0);
 
-    void paintTool(QPainter *painter, const QRectF &rect);
-    void paintHints(QPainter *painter, const QRectF &rect);
+    void paintTool(QPainter *painter, const QRectF &rect) override;
+    void paintHints(QPainter *painter, const QRectF &rect) override;
 
     void setCenter(QPointF point) { start_pos_ = point; }
 
     virtual void getEllipse(AEllipse &ellipse);
 
     void nextAction(void);
+    virtual void openEditor(void) override;
 
 protected:
     QPointF start_pos_;

@@ -13,6 +13,16 @@ PolylineEditorDialog::PolylineEditorDialog(QWidget *parent) : ObjectEditorDialog
     ui.lineThickness->setMaximum( SYMBOL_LINE_WIDTH_MAX );
     ui.lineThickness->setValue( SYMBOL_LINE_WIDTH_DEFAULT );
 
+    QPalette p;
+
+    p = ui.bgColorLabel->palette();
+    p.setColor( QPalette::Background, SYMBOL_FILL_BG );
+    ui.bgColorLabel->setPalette( p );
+
+    p = ui.fgColorLabel->palette();
+    p.setColor( QPalette::Background, SYMBOL_FILL_FG );
+    ui.fgColorLabel->setPalette( p );
+
     reloadSettings();
 
     connect( ui.okButton, SIGNAL( released() ), this, SLOT( accept() ) );

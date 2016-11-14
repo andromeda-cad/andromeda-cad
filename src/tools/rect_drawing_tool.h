@@ -24,6 +24,8 @@ public:
         Q_UNUSED(rect);
     }
 
+    virtual void openEditor(void) override;
+
 protected:
     // Starting position for the rectangle
     QPointF start_pos_;

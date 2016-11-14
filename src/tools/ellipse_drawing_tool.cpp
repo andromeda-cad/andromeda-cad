@@ -7,6 +7,11 @@ EllipseDrawingTool::EllipseDrawingTool(QObject *parent) : AToolBase(parent)
     setObjectName(TOOL_NAME::DRAW_ELLIPSE);
 }
 
+void EllipseDrawingTool::openEditor()
+{
+    //TODO
+}
+
 QRectF EllipseDrawingTool::getEllipseRect()
 {
     QPointF delta = tool_pos_ - start_pos_;
