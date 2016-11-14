@@ -626,7 +626,13 @@ void AView::drawForeground(QPainter *painter, const QRectF &rect)
     // Draw the active tool
     if ( isToolActive() )
     {
+        double alpha = painter->opacity();
+
+        painter->setOpacity( 0.8f );
+
         current_tool_->paint(painter, rect);
+
+        painter->setOpacity( alpha );
 
         drawCursor( painter, rect );
     }

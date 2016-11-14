@@ -180,7 +180,6 @@ void ASymbolEditor::onToolFinished(AToolBase *toolPtr)
     // Pointer comparison fun
     if (pointer == &poly_tool_)
     {
-        qDebug() << "adding new poly";
         APolyline *line = new APolyline();
 
         poly_tool_.getPolyline(*line);
@@ -191,8 +190,6 @@ void ASymbolEditor::onToolFinished(AToolBase *toolPtr)
     }
     else if (pointer == &ellipse_tool_)
     {
-        qDebug() << "adding new ellipse";
-
         AEllipse *ell = new AEllipse();
 
         ellipse_tool_.getEllipse(*ell);
@@ -204,7 +201,6 @@ void ASymbolEditor::onToolFinished(AToolBase *toolPtr)
     }
     else if (pointer == &rect_tool_)
     {
-        qDebug() << "adding new rect";
         APolyline *line = new APolyline();
 
         rect_tool_.getPolyline(*line);
@@ -215,7 +211,6 @@ void ASymbolEditor::onToolFinished(AToolBase *toolPtr)
     }
     else if (pointer == &pin_tool_)
     {
-        qDebug() << "adding new pin";
         symbol_.addPin(pin_tool_.getPin());
     }
 

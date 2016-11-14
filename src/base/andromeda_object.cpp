@@ -191,17 +191,14 @@ void AndromedaObject::setUndoEnabled(bool enabled)
     // Recursion! Set the undo status of all child objects
     for ( int i=0; i<childs.count(); i++ )
     {
-        child = static_cast<AndromedaObject*>( childs.at(i) );
+        child = static_cast<AndromedaObject*>( childs.at( i ) );
 
         if ( nullptr == child ) continue;
 
-        qDebug() << "child" << i << child->objectName();
         child->setUndoEnabled( enabled );
     }
 
     undo_enabled_ = enabled;
-
-    qDebug() << "undo" << objectName() << enabled;
 }
 
 /**
@@ -211,9 +208,9 @@ void AndromedaObject::setUndoEnabled(bool enabled)
  */
 bool AndromedaObject::undo()
 {
-    if (!undo_enabled_) return false;
+    if ( !undo_enabled_ ) return false;
 
-    if (!undo_stack_.canUndo()) return false;
+    if ( !undo_stack_.canUndo() ) return false;
 
     // Don't push undo actions to the stack
     undo_enabled_ = false;
