@@ -3,14 +3,10 @@
 #include <QGraphicsItem>
 #include <QDebug>
 #include <QTime>
-
 #include <QPainter>
-
 #include <QProgressDialog>
 
 #include "src/grid/grid.h"
-
-
 #include "andromeda_view.h"
 #include "src/drawable/drawable_base.h"
 
@@ -31,6 +27,9 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
     setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing);
+
+    //TODO - Work out best optimization flags
+
     //setOptimizationFlags(QGraphicsView::DontSavePainterState);
     //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -517,9 +516,22 @@ void AView::mousePressEvent(QMouseEvent *event)
 
 void AView::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    if ( nullptr == scene_ ) return;
+
     if ( isToolActive() )
     {
         sendMouseEventToTool( event );
+    }
+    else
+    {
+        QGraphicsItem *item = itemAt( event->pos() );
+
+        ADrawableBase *aItem = static_cast<ADrawableBase*>( item );
+
+        if ( nullptr != aItem )
+        {
+            editSingleItem( aItem );
+        }
     }
 }
 

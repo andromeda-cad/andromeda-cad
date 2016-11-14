@@ -99,7 +99,7 @@ void PolylineToolBase::getPolyline(APolyline &line)
     }
 
     // Re-center the polyline around its own center
-    line.normalize();
+    //line.normalize();
 
     AJsonObject data = polyline_.encoded();
 

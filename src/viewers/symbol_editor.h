@@ -35,6 +35,7 @@ public slots:
     void symbolEdited(void);
 
     virtual void editItems(void) override;
+    virtual void editSingleItem(ADrawableBase *item) override;
 
 protected:
     void keyPressEvent(QKeyEvent *event);

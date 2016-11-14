@@ -58,7 +58,7 @@ void RectDrawingTool::getPolyline(APolyline &line)
     line.addPoint(rect.bottomLeft());
     line.addPoint(rect.topLeft());
 
-    line.normalize();
+    // line.normalize();
 
     AJsonObject data = polyline_.encoded();
 

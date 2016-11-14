@@ -7,18 +7,16 @@
 #include <QKeyEvent>
 #include <QPaintEvent>
 #include <QCursor>
-
+#include <QtOpenGL>
+#include <QElapsedTimer>
+#include <QMutex>
 #include <QShortcut>
 
 #include "src/tools/tool_base.h"
+#include "src/base/andromeda_object.h"
+#include "src/drawable/drawable_base.h"
 
 #include "andromeda_scene.h"
-
-#include <QtOpenGL>
-
-#include <QElapsedTimer>
-
-#include <QMutex>
 
 #define ANDROMEDA_VIEW_MAX_SCALING 100.0f
 #define ANDROMEDA_VIEW_MIN_SCALING 0.001f
@@ -107,6 +105,7 @@ public slots:
     virtual void onSelectionChanged(void) {}
 
     virtual void editItems( void ) {}
+    virtual void editSingleItem( ADrawableBase *item ) { Q_UNUSED(item); }
 
 signals:
     // Called when the user cursor changes (in scene coordinates)
