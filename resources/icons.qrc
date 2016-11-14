@@ -16,5 +16,6 @@
         <file>icons/symbol/tool_polyline.svg</file>
         <file>icons/symbol/tool_rect.svg</file>
         <file>icons/symbol/tool_text.svg</file>
+        <file>icons/application_icon.png</file>
     </qresource>
 </RCC>
