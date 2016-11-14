@@ -98,6 +98,8 @@ void PolylineToolBase::getPolyline(APolyline &line)
         line.close();
     }
 
+    line.updateBoundingBox();
+
     // Re-center the polyline around its own center
     //line.normalize();
 

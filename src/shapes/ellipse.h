@@ -20,7 +20,6 @@ public:
     virtual AEllipse *clone(void) override { return makeClone<AEllipse>(); }
 
     // Painter Functions
-    virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
     virtual QPainterPath shape() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -41,12 +40,12 @@ public slots:
     void setRx(double rx) { setRadius(rx, ry_); }
     void setRy(double ry) { setRadius(rx_, ry); }
 
+    virtual void updateBoundingBox(void) override;
+
 protected:
     // Properties unique to the ellipse class
     double rx_ = 0;
     double ry_ = 0;
-
-    QRectF bb_;
 };
 
 #endif // SHAPES_ELLIPSE_H

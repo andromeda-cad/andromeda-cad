@@ -50,11 +50,6 @@ void AEllipse::encode(AJsonObject &data, bool hideDefaults) const
     }
 }
 
-QRectF AEllipse::boundingRect() const
-{
-    return bb_;
-}
-
 QPainterPath AEllipse::shape() const
 {
     QPainterPath path;
@@ -92,13 +87,18 @@ void AEllipse::setRadius(double rx, double ry)
     if (ry != 0)
         ry_ = qFabs(ry);
 
-    bb_.setTopLeft(QPointF(-rx, -ry));
-    bb_.setWidth(rx * 2);
-    bb_.setHeight(ry * 2);
+    updateBoundingBox();
+}
+
+void AEllipse::updateBoundingBox()
+{
+    bounding_box_.setTopLeft(QPointF(-rx_, -ry_));
+    bounding_box_.setWidth(rx_ * 2);
+    bounding_box_.setHeight(ry_ * 2);
 
     double o = line_width_ / 2;
 
-    bb_.adjust(-o,-o,o,o);
+    bounding_box_.adjust(-o,-o,o,o);
 
     prepareGeometryChange();
 

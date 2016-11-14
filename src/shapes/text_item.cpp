@@ -37,68 +37,28 @@ void ATextItem::setText(QString text)
     updateFont();
 }
 
-QRectF ATextItem::boundingRect() const
-{
-    QRectF r;
-
-    r.setWidth(width_); //static_text_.size().width());
-    r.setHeight(height_); //static_text_.size().height());
-
-    //TODO - Bounding Rect is calculating incorrectly
-    //TODO - because it is based on the static_text_ item...
-
-    //qDebug() << r.normalized();
-
-    return r.normalized();
-
-    /*
-
-    double w = width();
-    double h = height();
-
-    ABoundingBox box(QPointF(0,0));
-
-    //TOOD - update baesd on the alignment of the text
-
-    //TODO - update based on text orientation
-
-    /*
-    double dx, dy;
-    switch (orientation_)
-    {
-    default:
-    case Orientation::LEFT:
-        dx = w;
-        dy = h;
-        break;
-    }
-
-    box.add(QPointF(w, -h));
-
-    box.expand(1);
-
-    return box.normalized();
-    */
-}
-
 void ATextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED( widget );
+
     qreal lod = 1;
 
-    if (nullptr != option)
+    if ( nullptr != option )
     {
          lod = option->levelOfDetailFromTransform(painter->worldTransform());
+
+         // If the text is too small, display a filled rectangle instead
+        if (lod < 0.05)
+        {
+            return;
+        }
     }
 
-    painter->setBrush(Qt::NoBrush);
+    painter->setBrush( Qt::NoBrush );
 
     painter->setFont(font_);
     painter->setPen(pen());
 
-    // If the text is too small, display a filled rectangle instead
-    if (lod < 0.01)
-    {
-    }
     if (lod < 0.1)
     {
         painter->fillRect(boundingRect(), pen().color());
@@ -121,7 +81,15 @@ void ATextItem::updateFont()
 
     static_text_.setText(text_);
 
-    //setCacheMode(QGraphicsItem::ItemCoordinateCache, QSize(2*width_, 2*height_));
+    updateBoundingBox();
+}
+
+void ATextItem::updateBoundingBox()
+{
+    bounding_box_.setWidth( width_ );
+    bounding_box_.setHeight( height_ );
+
+    prepareGeometryChange();
 }
 
 void ATextItem::encode(AJsonObject &data, bool hideDefaults) const

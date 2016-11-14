@@ -26,7 +26,6 @@ public:
     };
 
     // Painter functions
-    virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     // Property getters
@@ -40,6 +39,7 @@ public:
 
 public slots:
     void setText(QString text);
+    virtual void updateBoundingBox(void) override;
 
 protected:
     QString text_;

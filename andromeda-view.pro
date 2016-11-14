@@ -19,7 +19,8 @@ TEMPLATE = app
 FORMS    += \
     ui/mainwindow.ui \
     ui/dialogs/symbol_editor/pin_editor.ui \
-    ui/dialogs/symbol_editor/graphic_item_editor.ui
+    ui/dialogs/symbol_editor/graphic_item_editor.ui \
+    ui/dialogs/symbol_editor/text_item_editor.ui
 
 RESOURCES += \
     resources/fonts.qrc \

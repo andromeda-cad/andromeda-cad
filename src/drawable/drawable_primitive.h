@@ -34,8 +34,6 @@ public:
         Q_UNUSED( widget );
     }
 
-    virtual QRectF boundingRect() const override { return QRectF(); }
-
     enum FillStyle
     {
         FILL_NONE,
