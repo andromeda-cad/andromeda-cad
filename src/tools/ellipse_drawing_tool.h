@@ -23,6 +23,8 @@ public:
     virtual void openEditor(void) override;
 
 protected:
+    AEllipse ellipse_;
+
     QPointF start_pos_;
 
     void onToolPosChanged(void);

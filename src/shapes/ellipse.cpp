@@ -15,42 +15,35 @@ void AEllipse::decode(AJsonObject &data, bool undoable)
 
     //TODO
 
-    /*
-    // Decode radius
-    QJsonValue jRadius = data[OBJ_KEY::RADIUS];
+    double dRadius;
+    QPointF pRadius;
 
-    // Extract ellipse radius
-
-    // Single value indicates circle
-    if (jRadius.isDouble())
+    if ( data.getDouble( OBJ_KEY::RADIUS, dRadius ) )
     {
-        setRadius(jRadius.toDouble());
+        setRadius( dRadius );
     }
-    else if (jRadius.isObject())
+    else if ( data.getPoint( OBJ_KEY::RADIUS, pRadius ) )
     {
-        // Radius supplied as x/y pair
-        QJsonObject jRxy = jRadius.toObject();
-
-        QJsonValue rx = jRxy[OBJ_KEY::RADIUS_X];
-        QJsonValue ry = jRxy[OBJ_KEY::RADIUS_Y];
-
-        if (rx.isDouble() && ry.isDouble())
-            setRadius(rx.toDouble(), ry.toDouble());
+        setRadius( pRadius );
     }
-    */
 }
 
+/**
+ * @brief AEllipse::encode
+ * Encode data particular to an ellipse object
+ * @param data
+ * @param hideDefaults
+ */
 void AEllipse::encode(AJsonObject &data, bool hideDefaults) const
 {
     ADrawablePrimitive::encode(data, hideDefaults);
 
-    data[OBJ_KEY::THICKNESS] = lineWidth();
-    data[OBJ_KEY::FILL_STYLE] = fillStyle();
-
+    // If both radii are equal, save only a single parameter
     if ( rx_ == ry_ )
     {
         data[OBJ_KEY::RADIUS] = rx_;
     }
+    // Otherwise, store an {x,y} pair
     else
     {
         data.addPoint(OBJ_KEY::RADIUS, QPointF(rx(), ry()));

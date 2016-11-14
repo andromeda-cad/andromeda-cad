@@ -1,6 +1,9 @@
+#include <QApplication>
+
+#include "src/dialogs/symbol_editor/graphic_item_editor_dialog.h"
+
 #include "ellipse_drawing_tool.h"
 
-#include <QApplication>
 
 EllipseDrawingTool::EllipseDrawingTool(QObject *parent) : AToolBase(parent)
 {
@@ -9,7 +12,18 @@ EllipseDrawingTool::EllipseDrawingTool(QObject *parent) : AToolBase(parent)
 
 void EllipseDrawingTool::openEditor()
 {
-    //TODO
+    GraphicItemEditorDialog dlg;
+
+    dlg.setWindowTitle( tr( "Ellipse Properties" ) );
+
+    dlg.loadSettings( ellipse_.encoded() );
+
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+        AJsonObject settings = dlg.saveSettings();
+
+        ellipse_.decode( settings );
+    }
 }
 
 QRectF EllipseDrawingTool::getEllipseRect()
@@ -110,7 +124,11 @@ void EllipseDrawingTool::getEllipse(AEllipse &ellipse)
 {
     QRectF r = getEllipseRect();
 
-    ellipse.setPos(r.center());
+    ellipse_.setPos(r.center());
     //ellipse.moveTo(r.center());
-    ellipse.setRadius(r.width()/2, r.height()/2);
+    ellipse_.setRadius(r.width()/2, r.height()/2);
+
+    AJsonObject data = ellipse_.encoded();
+
+    ellipse.decode( data );
 }

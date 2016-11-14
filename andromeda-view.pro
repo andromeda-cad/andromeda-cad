@@ -19,7 +19,7 @@ TEMPLATE = app
 FORMS    += \
     ui/mainwindow.ui \
     ui/dialogs/symbol_editor/pin_editor.ui \
-    ui/dialogs/symbol_editor/polygon_editor.ui
+    ui/dialogs/symbol_editor/graphic_item_editor.ui
 
 RESOURCES += \
     resources/fonts.qrc \
@@ -66,7 +66,7 @@ HEADERS += \
     src/viewers/symbol_editor.h \
     src/main.h \
     src/dialogs/symbol_editor/pin_editor_dialog.h \
-    src/dialogs/symbol_editor/polyline_editor_dialog.h
+    src/dialogs/symbol_editor/graphic_item_editor_dialog.h
 
 SOURCES += \
     src/base/andromeda_object.cpp \
@@ -103,6 +103,6 @@ SOURCES += \
     src/viewers/symbol_editor.cpp \
     src/viewers/symbol_viewer.cpp \
     src/dialogs/symbol_editor/pin_editor_dialog.cpp \
-    src/dialogs/symbol_editor/polyline_editor_dialog.cpp
+    src/dialogs/symbol_editor/graphic_item_editor_dialog.cpp
 
 DISTFILES +=

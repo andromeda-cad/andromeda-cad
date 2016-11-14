@@ -1,5 +1,5 @@
 #include "src/geometry/geometry.h"
-#include "src/dialogs/symbol_editor/polyline_editor_dialog.h"
+#include "src/dialogs/symbol_editor/graphic_item_editor_dialog.h"
 
 #include "polyline_drawing_tool.h"
 
@@ -24,7 +24,9 @@ void PolylineDrawingTool::finalAction()
 
 void PolylineDrawingTool::openEditor()
 {
-    PolylineEditorDialog dlg;
+    GraphicItemEditorDialog dlg;
+
+    dlg.setWindowTitle( tr( "Polygon Properties" ) );
 
     dlg.loadSettings( polyline_.encoded() );
 

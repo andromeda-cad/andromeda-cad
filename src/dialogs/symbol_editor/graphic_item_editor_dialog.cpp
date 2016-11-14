@@ -1,12 +1,12 @@
-#include "polyline_editor_dialog.h"
+#include "graphic_item_editor_dialog.h"
 
-PolylineEditorDialog::PolylineEditorDialog(QWidget *parent) : ObjectEditorDialog(parent)
+GraphicItemEditorDialog::GraphicItemEditorDialog(QWidget *parent) : ObjectEditorDialog(parent)
 {
-    line_.setUndoEnabled(false);
+    shape_.setUndoEnabled(false);
 
     ui.setupUi( this );
 
-    setWindowTitle( "Polyline Properties" );
+    setWindowTitle( "Graphic Item Properties" );
 
     // Default values
     ui.lineThickness->setMinimum( SYMBOL_LINE_WIDTH_MIN );
@@ -29,13 +29,13 @@ PolylineEditorDialog::PolylineEditorDialog(QWidget *parent) : ObjectEditorDialog
     connect( ui.cancelButton, SIGNAL( released() ), this, SLOT( reject() ) );
 }
 
-void PolylineEditorDialog::reloadSettings()
+void GraphicItemEditorDialog::reloadSettings()
 {
-    line_.decode( settings_ );
+    shape_.decode( settings_ );
 
-    ui.lineThickness->setValue( line_.lineWidth() );
+    ui.lineThickness->setValue( shape_.lineWidth() );
 
-    switch ( line_.fillStyle() )
+    switch ( shape_.fillStyle() )
     {
     default:
     case ADrawablePrimitive::FILL_NONE:
@@ -50,16 +50,16 @@ void PolylineEditorDialog::reloadSettings()
     }
 }
 
-AJsonObject PolylineEditorDialog::saveSettings()
+AJsonObject GraphicItemEditorDialog::saveSettings()
 {
     if ( ui.fillNone->isChecked() )
-        line_.setFillStyle( ADrawablePrimitive::FILL_NONE );
+        shape_.setFillStyle( ADrawablePrimitive::FILL_NONE );
     else if ( ui.fillBackground->isChecked() )
-        line_.setFillStyle( ADrawablePrimitive::FILL_BACKGROUND );
+        shape_.setFillStyle( ADrawablePrimitive::FILL_BACKGROUND );
     else if ( ui.fillBackground->isCheckable() )
-        line_.setFillStyle( ADrawablePrimitive::FILL_FOREGROUND );
+        shape_.setFillStyle( ADrawablePrimitive::FILL_FOREGROUND );
 
-    line_.setLineWidth( ui.lineThickness->value() );
+    shape_.setLineWidth( ui.lineThickness->value() );
 
-    return line_.encoded();
+    return shape_.encoded();
 }
