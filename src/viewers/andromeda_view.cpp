@@ -524,6 +524,8 @@ void AView::mouseDoubleClickEvent(QMouseEvent *event)
     }
     else
     {
+        //TODO - Perform disambiguation if there
+        // are multiple items available at the given position
         QGraphicsItem *item = itemAt( event->pos() );
 
         ADrawableBase *aItem = static_cast<ADrawableBase*>( item );
