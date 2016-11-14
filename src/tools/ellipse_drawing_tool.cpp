@@ -63,8 +63,24 @@ void EllipseDrawingTool::paintTool(QPainter *painter, const QRectF &rect)
     if (nullptr == painter)
         return;
 
-    painter->setBrush(tool_brush_);
-    painter->setPen(tool_pen_);
+    QPen pen( SYMBOL_LINE_COLOR );
+
+    pen.setWidthF( ellipse_.lineWidth() );
+
+    painter->setPen( pen );
+
+    switch ( ellipse_.fillStyle() )
+    {
+    case ADrawablePrimitive::FILL_NONE:
+        painter->setBrush( Qt::NoBrush );
+        break;
+    case ADrawablePrimitive::FILL_BACKGROUND:
+        painter->setBrush( QBrush( SYMBOL_FILL_BG ) );
+        break;
+    case ADrawablePrimitive::FILL_FOREGROUND:
+        painter->setBrush( QBrush( SYMBOL_FILL_FG ) );
+        break;
+    }
 
     QRectF r = getEllipseRect();
 
