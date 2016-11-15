@@ -137,6 +137,8 @@ void APolyline::setPoint(int index, QPointF point)
         p.point = point;
         points_.replace(index, p);
     }
+
+    updateBoundingBox();
 }
 
 void APolyline::setAngle(int index, double angle)
@@ -147,12 +149,17 @@ void APolyline::setAngle(int index, double angle)
         p.angle = angle;
         points_.replace(index, p);
     }
+
+    updateBoundingBox();
 }
 
-QRectF APolyline::boundingRect() const
+void APolyline::updateBoundingBox()
 {
     if (points_.count() == 0)
-        return QRectF();
+    {
+        bounding_box_ = QRectF();
+        return;
+    }
 
     ABoundingBox b(points_.first().point);
 
@@ -163,7 +170,9 @@ QRectF APolyline::boundingRect() const
 
     b.expand(line_width_ / 2);
 
-    return b.normalized();
+    bounding_box_ = b.normalized();
+
+    prepareGeometryChange();
 }
 
 void APolyline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -233,6 +242,8 @@ bool APolyline::addPoint(LWPolypoint point)
         point.angle = 0;
 
         points_.append(point);
+
+        updateBoundingBox();
         return true;
     }
 
@@ -246,7 +257,7 @@ bool APolyline::addPoint(LWPolypoint point)
 
     points_.append(point);
 
-    prepareGeometryChange();
+    updateBoundingBox();
 
     return true;
 }

@@ -12,7 +12,7 @@ const QColor SYMBOL_BB_COLOR(150,150,150,150);
 
 const double SYMBOL_LINE_WIDTH_DEFAULT = 2.0f;
 const double SYMBOL_LINE_WIDTH_MIN = 0.5f;
-const double SYMBOL_LINE_WIDTH_MAX = 10.0f;
+const double SYMBOL_LINE_WIDTH_MAX = 25.0f;
 
 #endif // SHAPES_SHAPE_DEFINES_H
 

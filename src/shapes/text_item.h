@@ -13,6 +13,7 @@ class ATextItem : public ADrawablePrimitive
     Q_PROPERTY( QString text READ text WRITE setText )
     Q_PROPERTY( double width READ width )
     Q_PROPERTY( double height READ height )
+    Q_PROPERTY( int alignment READ alignment WRITE setAlignment )
 
 public:
     ATextItem(QObject *parent = 0);
@@ -26,20 +27,22 @@ public:
     };
 
     // Painter functions
-    virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     // Property getters
     QString text(void) const { return text_; }
     double width(void) const { return width_; }
     double height(void) const { return height_; }
+    int alignment(void) const { return alignment_; }
 
     // Encode / decode
-    virtual void encode(AJsonObject &data, bool hideDefaults) const;
-    virtual void decode(AJsonObject &data, bool undoable);
+    virtual void encode(AJsonObject &data, bool hideDefaults) const override;
+    virtual void decode(AJsonObject &data, bool undoable = false) override;
 
 public slots:
     void setText(QString text);
+    void setAlignment( int alignment );
+    virtual void updateBoundingBox(void) override;
 
 protected:
     QString text_;
@@ -47,6 +50,8 @@ protected:
     QStaticText static_text_;
 
     QFont font_;
+
+    int alignment_ = Alignment::LEFT;
 
     double width_  = 0;
     double height_ = 0;

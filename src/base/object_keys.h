@@ -49,6 +49,7 @@ const QString SYMBOLS = "symbols";
 
 // Text items
 const QString TEXT = "text";
+const QString ALIGNMENT = "alignment";
 
 const QString FLIP = "flip";
 

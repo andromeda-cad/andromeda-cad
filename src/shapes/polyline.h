@@ -29,7 +29,6 @@ public:
     virtual APolyline *clone(void) override { return makeClone<APolyline>(); }
 
     // Painter Functions
-    virtual QRectF boundingRect(void) const Q_DECL_OVERRIDE;
     virtual QPainterPath shape(void) const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
 
@@ -59,6 +58,8 @@ public slots:
     bool addPoint(QPointF point, double angle=0);
     void close(void);
     void normalize(void);
+
+    virtual void updateBoundingBox(void) override;
 
 protected:
     // Properties unique to the polyline class

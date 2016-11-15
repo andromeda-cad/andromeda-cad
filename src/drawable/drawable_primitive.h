@@ -27,6 +27,13 @@ public:
     virtual void encode(AJsonObject &data, bool hideDefaults = false) const override;
     virtual void decode(AJsonObject &data, bool undoable = true) override;
 
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override
+    {
+        Q_UNUSED( painter );
+        Q_UNUSED( option );
+        Q_UNUSED( widget );
+    }
+
     enum FillStyle
     {
         FILL_NONE,

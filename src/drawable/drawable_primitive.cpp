@@ -61,6 +61,8 @@ void ADrawablePrimitive::setLineWidth(double lineWidth)
     addUndoAction( "SetLineWidth", OBJ_KEY::WIDTH, line_width_, lineWidth );
 
     line_width_ = lineWidth;
+
+    updateBoundingBox();
 }
 
 QPen ADrawablePrimitive::pen(const QStyleOptionGraphicsItem *option)

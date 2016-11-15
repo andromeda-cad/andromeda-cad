@@ -46,7 +46,18 @@ void ASymbolPin::setLabel(QString label)
     //TODO better logic here
     label_ = label;
 
-    prepareGeometryChange();
+    updateBoundingBox();
+}
+
+void ASymbolPin::updateBoundingBox()
+{
+    ABoundingBox b(QPointF(0,0));
+
+    b.add(endDelta());
+
+    b.expand(12);
+
+    bounding_box_ = b.normalized();
 }
 
 void ASymbolPin::setLength(double length)
@@ -59,7 +70,7 @@ void ASymbolPin::setLength(double length)
     //TODO better logic here (min / max length, etc)
     length_ = qAbs(length);
 
-    prepareGeometryChange();
+    updateBoundingBox();
 }
 QPointF ASymbolPin::endDelta() const
 {
@@ -117,17 +128,6 @@ void ASymbolPin::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->setPen(p);
 
     painter->drawLine(QPointF(), endDelta());
-}
-
-QRectF ASymbolPin::boundingRect() const
-{
-    ABoundingBox b(QPointF(0,0));
-
-    b.add(endDelta());
-
-    b.expand(12);
-
-    return b.normalized();
 }
 
 QPainterPath ASymbolPin::shape() const

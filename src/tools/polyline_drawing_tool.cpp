@@ -1,5 +1,4 @@
 #include "src/geometry/geometry.h"
-#include "src/dialogs/symbol_editor/polyline_editor_dialog.h"
 
 #include "polyline_drawing_tool.h"
 
@@ -24,15 +23,10 @@ void PolylineDrawingTool::finalAction()
 
 void PolylineDrawingTool::openEditor()
 {
-    PolylineEditorDialog dlg;
+    dialog_.setWindowTitle( tr( "Polygon Properties" ) );
 
-    dlg.loadSettings( polyline_.encoded() );
-
-    if ( dlg.exec() == QDialog::Accepted )
+    if ( dialog_.editObject( &polyline_ ) )
     {
-        AJsonObject settings = dlg.saveSettings();
-        polyline_.decode( settings );
-
         emit updated();
     }
 }

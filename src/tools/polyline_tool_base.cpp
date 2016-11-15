@@ -18,15 +18,37 @@ void PolylineToolBase::nextAction()
     }
 }
 
+QPen PolylineToolBase::pen()
+{
+    QPen p( SYMBOL_LINE_COLOR );
+
+    p.setWidthF( polyline_.lineWidth() );
+    p.setCapStyle( Qt::RoundCap );
+    p.setJoinStyle( Qt::RoundJoin );
+
+    return p;
+}
+
+QBrush PolylineToolBase::brush()
+{
+    switch ( polyline_.fillStyle() )
+    {
+    default:
+    case ADrawablePrimitive::FILL_NONE:
+        return Qt::NoBrush;
+    case ADrawablePrimitive::FILL_BACKGROUND:
+        return QBrush( QColor( SYMBOL_FILL_BG ) );
+    case ADrawablePrimitive::FILL_FOREGROUND:
+        return QBrush( QColor( SYMBOL_FILL_FG ) );
+    }
+}
+
 void PolylineToolBase::paintTool(QPainter *painter, const QRectF &rect)
 {
     Q_UNUSED(rect);
 
-    QPen p( SYMBOL_LINE_COLOR );
-    p.setWidthF( polyline_.lineWidth() );
-
-    painter->setPen( p );
-    painter->setBrush(Qt::NoBrush);
+    painter->setPen( pen() );
+    painter->setBrush( brush() );
 
     if (polyline_.shape().intersects(rect))
     {
@@ -76,6 +98,12 @@ void PolylineToolBase::getPolyline(APolyline &line)
         line.close();
     }
 
+    line.updateBoundingBox();
+
     // Re-center the polyline around its own center
-    line.normalize();
+    //line.normalize();
+
+    AJsonObject data = polyline_.encoded();
+
+    line.decode( data );
 }

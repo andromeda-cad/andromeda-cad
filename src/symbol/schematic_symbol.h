@@ -26,7 +26,6 @@ public:
     virtual void defaultValues() override;
 
     // Paint functions
-    virtual QRectF boundingRect() const Q_DECL_OVERRIDE;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual QPainterPath shape() const;
 

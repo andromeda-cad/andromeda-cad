@@ -158,11 +158,6 @@ void ASchematicSymbol::deletePins()
     pins_.clear();
 }
 
-QRectF ASchematicSymbol::boundingRect() const
-{
-    return bounding_box_;
-}
-
 void ASchematicSymbol::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     //TODO

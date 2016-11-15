@@ -3,14 +3,10 @@
 #include <QGraphicsItem>
 #include <QDebug>
 #include <QTime>
-
 #include <QPainter>
-
 #include <QProgressDialog>
 
 #include "src/grid/grid.h"
-
-
 #include "andromeda_view.h"
 #include "src/drawable/drawable_base.h"
 
@@ -31,6 +27,9 @@ AView::AView(QWidget *parent) : QGraphicsView(parent)
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
     setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing);
+
+    //TODO - Work out best optimization flags
+
     //setOptimizationFlags(QGraphicsView::DontSavePainterState);
     //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -517,9 +516,24 @@ void AView::mousePressEvent(QMouseEvent *event)
 
 void AView::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    if ( nullptr == scene_ ) return;
+
     if ( isToolActive() )
     {
         sendMouseEventToTool( event );
+    }
+    else
+    {
+        //TODO - Perform disambiguation if there
+        // are multiple items available at the given position
+        QGraphicsItem *item = itemAt( event->pos() );
+
+        ADrawableBase *aItem = static_cast<ADrawableBase*>( item );
+
+        if ( nullptr != aItem )
+        {
+            editSingleItem( aItem );
+        }
     }
 }
 
@@ -626,7 +640,13 @@ void AView::drawForeground(QPainter *painter, const QRectF &rect)
     // Draw the active tool
     if ( isToolActive() )
     {
+        double alpha = painter->opacity();
+
+        painter->setOpacity( 0.8f );
+
         current_tool_->paint(painter, rect);
+
+        painter->setOpacity( alpha );
 
         drawCursor( painter, rect );
     }

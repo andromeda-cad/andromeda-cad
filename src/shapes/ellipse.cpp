@@ -15,51 +15,39 @@ void AEllipse::decode(AJsonObject &data, bool undoable)
 
     //TODO
 
-    /*
-    // Decode radius
-    QJsonValue jRadius = data[OBJ_KEY::RADIUS];
+    double dRadius;
+    QPointF pRadius;
 
-    // Extract ellipse radius
-
-    // Single value indicates circle
-    if (jRadius.isDouble())
+    if ( data.getDouble( OBJ_KEY::RADIUS, dRadius ) )
     {
-        setRadius(jRadius.toDouble());
+        setRadius( dRadius );
     }
-    else if (jRadius.isObject())
+    else if ( data.getPoint( OBJ_KEY::RADIUS, pRadius ) )
     {
-        // Radius supplied as x/y pair
-        QJsonObject jRxy = jRadius.toObject();
-
-        QJsonValue rx = jRxy[OBJ_KEY::RADIUS_X];
-        QJsonValue ry = jRxy[OBJ_KEY::RADIUS_Y];
-
-        if (rx.isDouble() && ry.isDouble())
-            setRadius(rx.toDouble(), ry.toDouble());
+        setRadius( pRadius );
     }
-    */
 }
 
+/**
+ * @brief AEllipse::encode
+ * Encode data particular to an ellipse object
+ * @param data
+ * @param hideDefaults
+ */
 void AEllipse::encode(AJsonObject &data, bool hideDefaults) const
 {
     ADrawablePrimitive::encode(data, hideDefaults);
 
-    data[OBJ_KEY::THICKNESS] = lineWidth();
-    data[OBJ_KEY::FILL_STYLE] = fillStyle();
-
+    // If both radii are equal, save only a single parameter
     if ( rx_ == ry_ )
     {
         data[OBJ_KEY::RADIUS] = rx_;
     }
+    // Otherwise, store an {x,y} pair
     else
     {
         data.addPoint(OBJ_KEY::RADIUS, QPointF(rx(), ry()));
     }
-}
-
-QRectF AEllipse::boundingRect() const
-{
-    return bb_;
 }
 
 QPainterPath AEllipse::shape() const
@@ -99,13 +87,18 @@ void AEllipse::setRadius(double rx, double ry)
     if (ry != 0)
         ry_ = qFabs(ry);
 
-    bb_.setTopLeft(QPointF(-rx, -ry));
-    bb_.setWidth(rx * 2);
-    bb_.setHeight(ry * 2);
+    updateBoundingBox();
+}
+
+void AEllipse::updateBoundingBox()
+{
+    bounding_box_.setTopLeft(QPointF(-rx_, -ry_));
+    bounding_box_.setWidth(rx_ * 2);
+    bounding_box_.setHeight(ry_ * 2);
 
     double o = line_width_ / 2;
 
-    bb_.adjust(-o,-o,o,o);
+    bounding_box_.adjust(-o,-o,o,o);
 
     prepareGeometryChange();
 

@@ -30,11 +30,23 @@ bool RectDrawingTool::addPoint(QPointF point)
     return false;
 }
 
+void RectDrawingTool::openEditor()
+{
+    dialog_.setWindowTitle( tr("Rectangle Properties") );
+
+    if ( dialog_.editObject( &polyline_ ) )
+    {
+        emit updated();
+    }
+}
+
 void RectDrawingTool::getPolyline(APolyline &line)
 {
     QRectF rect = getRect().normalized();
 
     line.clear();
+
+    //TODO line data should be includedin the encoded() command
 
     line.addPoint(rect.topLeft());
     line.addPoint(rect.topRight());
@@ -42,7 +54,9 @@ void RectDrawingTool::getPolyline(APolyline &line)
     line.addPoint(rect.bottomLeft());
     line.addPoint(rect.topLeft());
 
-    line.normalize();
+    AJsonObject data = polyline_.encoded();
+
+    line.decode( data );
 }
 
 QRectF RectDrawingTool::getRect()
@@ -84,8 +98,8 @@ void RectDrawingTool::paintTool(QPainter *painter, const QRectF &rect)
 
     if (toolState() > TOOL_STATE::POLYLINE_SET_ORIGIN)
     {
-        painter->setPen(tool_pen_);
-        painter->setBrush(tool_brush_);
+        painter->setPen( pen() );
+        painter->setBrush( brush() );
 
         painter->drawRect(getRect());
     }

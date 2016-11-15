@@ -25,7 +25,6 @@ public:
     virtual void decode(AJsonObject &data, bool undoable = true) override;
 
     // Drawing function
-    virtual QRectF boundingRect(void) const Q_DECL_OVERRIDE;
     virtual QPainterPath shape(void) const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -34,6 +33,7 @@ public slots:
     void setLength(double length);
     QPointF endPoint(void) const;
     QPointF endDelta(void) const;
+    virtual void updateBoundingBox() override;
 
 protected:
     // The pin label
@@ -41,8 +41,6 @@ protected:
     // Pin length
     double length_ = 100; //TODO - define a default length
     // Pin orientation
-
-
 };
 
 #endif // SYMBOL_PIN_H

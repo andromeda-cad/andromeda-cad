@@ -120,7 +120,7 @@
       <item>
        <widget class="QPushButton" name="textButton">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="toolTip">
          <string>Add pin connection to symbol</string>

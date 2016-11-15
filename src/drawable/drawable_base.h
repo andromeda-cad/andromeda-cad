@@ -64,7 +64,14 @@ public:
     void drawBoundingBox(QPainter *painter);
 
     // Property getters
-    virtual QRectF boundingRect(void) const override { return QRectF(); }
+    virtual QRectF boundingRect(void) const override { return bounding_box_; }
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override
+    {
+        Q_UNUSED( painter );
+        Q_UNUSED( option );
+        Q_UNUSED( widget );
+    }
+
     int layer(void) const { return layer_; }
     unsigned orientation(void) const { return orientation_; }
 
@@ -92,6 +99,8 @@ public slots:
 
     int getLock( void ) { return lock_; }
 
+    virtual void updateBoundingBox( void ) {}
+
 signals:
     void layerChanged(int layer);
 
@@ -99,6 +108,9 @@ protected:
     // Properties unique to ADrawableBase
     bool draw_bounding_box_ = false;
     QPen bounding_box_pen_;
+
+    // Store bounding box locally so that it does not need to be recalculated on every paint call
+    QRectF bounding_box_;
 
     int layer_ = (int)  LAYER_ID::NONE;
 
