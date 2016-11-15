@@ -1,5 +1,3 @@
-#include "src/dialogs/symbol_editor/graphic_item_editor_dialog.h"
-
 #include "rect_drawing_tool.h"
 
 RectDrawingTool::RectDrawingTool(QObject *parent) : PolylineToolBase(parent)
@@ -34,11 +32,9 @@ bool RectDrawingTool::addPoint(QPointF point)
 
 void RectDrawingTool::openEditor()
 {
-    GraphicItemEditorDialog dlg;
+    dialog_.setWindowTitle( tr("Rectangle Properties") );
 
-    dlg.setWindowTitle( tr("Rectangle Properties") );
-
-    if ( dlg.editObject( &polyline_ ) )
+    if ( dialog_.editObject( &polyline_ ) )
     {
         emit updated();
     }

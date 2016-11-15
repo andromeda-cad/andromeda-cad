@@ -17,6 +17,7 @@ public:
     virtual void finalAction(void) override;
 
     virtual void openEditor(void) override;
+
 };
 
 #endif // POLYLINE_DRAWING_TOOL_H

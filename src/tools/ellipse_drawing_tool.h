@@ -2,6 +2,7 @@
 #define ELLIPSE_DRAWING_TOOL
 
 #include "src/shapes/ellipse.h"
+#include "src/dialogs/symbol_editor/graphic_item_editor_dialog.h"
 
 #include "tool_base.h"
 
@@ -24,6 +25,8 @@ public:
 
 protected:
     AEllipse ellipse_;
+
+    GraphicItemEditorDialog dialog_;
 
     QPointF start_pos_;
 

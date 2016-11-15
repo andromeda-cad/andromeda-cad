@@ -2,6 +2,7 @@
 #define POLYLINE_TOOL_BASE_H
 
 #include "src/shapes/polyline.h"
+#include "src/dialogs/symbol_editor/graphic_item_editor_dialog.h"
 
 #include "tool_base.h"
 
@@ -23,6 +24,8 @@ public:
 
 protected:
     APolyline polyline_;
+
+    GraphicItemEditorDialog dialog_;
 
     bool allow_self_intersection_ = false;
     bool force_closed_ = false;

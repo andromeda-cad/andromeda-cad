@@ -1,6 +1,7 @@
 #ifndef PIN_DRAWING_TOOL_H
 #define PIN_DRAWING_TOOL_H
 
+#include "src/dialogs/symbol_editor/pin_editor_dialog.h"
 #include "src/symbol/symbol_pin.h"
 
 #include "tool_base.h"
@@ -25,6 +26,7 @@ protected:
     virtual void openEditor(void) override;
 
     ASymbolPin pin_;
+    PinEditorDialog dialog_;
 };
 
 #endif // PIN_DRAWING_TOOL_H

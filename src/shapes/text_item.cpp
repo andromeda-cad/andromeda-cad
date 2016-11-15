@@ -16,20 +16,40 @@ ATextItem::ATextItem(QObject *parent) : ADrawablePrimitive(parent)
     font_.setFamily( "Roboto Mono" );
 }
 
+void ATextItem::setAlignment(int alignment)
+{
+    if ( alignment == alignment_ ) return;
+
+    switch ( alignment )
+    {
+    default:
+        return;
+    case Alignment::LEFT:
+    case Alignment::RIGHT:
+    case Alignment::CENTER:
+        break;
+    }
+
+    addUndoAction( "SetAlignment", OBJ_KEY::ALIGNMENT, alignment_, alignment );
+
+    alignment_ = alignment;
+}
+
 void ATextItem::setText(QString text)
 {
-    if (text == text_) return;
+    if ( text == text_ ) return;
 
-    if (!allow_multiline_)
+    if ( text.isEmpty() ) return;
+
+    if ( !allow_multiline_ )
     {
-        if (text.contains('\n'))
-            text = text.split('\n').first();
+        if ( text.contains( '\n') )
+            text = text.split( '\n' ).first();
     }
 
     //TODO - perform any checks here?
 
-    //TODO - make the action invertible
-    //addUndoAction();
+    addUndoAction( "SetText", OBJ_KEY::TEXT, text_, text );
 
     text_ = text;
 

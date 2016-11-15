@@ -6,7 +6,7 @@ GraphicItemEditorDialog::GraphicItemEditorDialog(QWidget *parent) : ObjectEditor
 
     ui.setupUi( this );
 
-    setWindowTitle( "Graphic Item Properties" );
+    setWindowTitle( tr( "Graphic Item Properties" ) );
 
     // Default values
     ui.lineThickness->setMinimum( SYMBOL_LINE_WIDTH_MIN );

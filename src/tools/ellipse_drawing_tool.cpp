@@ -1,28 +1,20 @@
 #include <QApplication>
 
-#include "src/dialogs/symbol_editor/graphic_item_editor_dialog.h"
-
 #include "ellipse_drawing_tool.h"
 
 
 EllipseDrawingTool::EllipseDrawingTool(QObject *parent) : AToolBase(parent)
 {
     setObjectName(TOOL_NAME::DRAW_ELLIPSE);
+
+    dialog_.setWindowTitle( tr( "Ellipse Properties" ) );
 }
 
 void EllipseDrawingTool::openEditor()
 {
-    GraphicItemEditorDialog dlg;
-
-    dlg.setWindowTitle( tr( "Ellipse Properties" ) );
-
-    dlg.loadSettings( ellipse_.encoded() );
-
-    if ( dlg.exec() == QDialog::Accepted )
+    if ( dialog_.editObject( &ellipse_ ) )
     {
-        AJsonObject settings = dlg.saveSettings();
-
-        ellipse_.decode( settings );
+        emit updated();
     }
 }
 

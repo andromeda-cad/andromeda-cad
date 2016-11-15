@@ -1,6 +1,7 @@
 #ifndef TEXT_DRAWING_TOOL_H
 #define TEXT_DRAWING_TOOL_H
 
+#include "src/dialogs/symbol_editor/text_editor_dialog.h"
 #include "src/shapes/text_item.h"
 
 #include "tool_base.h"
@@ -18,8 +19,12 @@ public:
 
     ATextItem *getText( void );
 
+    virtual void openEditor() override;
+
 protected:
     ATextItem text_;
+
+    TextEditorDialog dialog_;
 
     virtual void onToolPosChanged( void ) override;
 };

@@ -1,8 +1,6 @@
 #include <QDebug>
 #include <QDialog>
 
-#include "src/dialogs/symbol_editor/pin_editor_dialog.h"
-
 #include "pin_drawing_tool.h"
 
 
@@ -61,9 +59,7 @@ void PinDrawingTool::onToolPosChanged()
 
 void PinDrawingTool::openEditor()
 {
-    PinEditorDialog dlg;
-
-    if ( dlg.editObject( &pin_ ) )
+    if ( dialog_.editObject( &pin_ ) )
     {
         emit updated();
     }

@@ -1,3 +1,5 @@
+#include "src/dialogs/symbol_editor/text_editor_dialog.h"
+
 #include "text_drawing_tool.h"
 
 TextDrawingTool::TextDrawingTool(QObject *parent) : AToolBase( parent )
@@ -14,6 +16,14 @@ ATextItem* TextDrawingTool::getText()
     ATextItem* clone = text_.clone();
 
     return clone;
+}
+
+void TextDrawingTool::openEditor()
+{
+    if ( dialog_.editObject( &text_ ) )
+    {
+        emit updated();
+    }
 }
 
 void TextDrawingTool::paintTool(QPainter *painter, const QRectF &rect)
