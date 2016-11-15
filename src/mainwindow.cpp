@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->graphicsView, SIGNAL(updateStats(QString)), this, SLOT(updateStats(QString)));
     //connect(ui->graphicsView,SIGNAL(cursorPositionChanged(QPointF)),this,SLOT(cursorPosChanged(QPointF)));
 
+    connect( ui->textButton, SIGNAL( released() ), ui->graphicsView, SLOT( drawText() ) );
     connect( ui->pinButton, SIGNAL( released() ), ui->graphicsView, SLOT( drawPin() ) );
     connect( ui->ellipseButton, SIGNAL(released()), ui->graphicsView, SLOT(drawEllipse()));
     connect( ui->rectLine, SIGNAL(released()), ui->graphicsView, SLOT(drawRect()));

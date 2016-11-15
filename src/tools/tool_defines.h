@@ -27,6 +27,9 @@ enum class TOOL_STATE : int {
 
     // Pin drawing tools
     PIN_SET_POS = 0x30,
+
+    // Text drawing tools
+    TEXT_SET_POS = 0x40,
 };
 
 #endif // TOOL_DEFINES_H

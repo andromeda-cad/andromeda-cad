@@ -67,7 +67,8 @@ HEADERS += \
     src/viewers/symbol_editor.h \
     src/main.h \
     src/dialogs/symbol_editor/pin_editor_dialog.h \
-    src/dialogs/symbol_editor/graphic_item_editor_dialog.h
+    src/dialogs/symbol_editor/graphic_item_editor_dialog.h \
+    src/tools/text_drawing_tool.h
 
 SOURCES += \
     src/base/andromeda_object.cpp \
@@ -104,6 +105,7 @@ SOURCES += \
     src/viewers/symbol_editor.cpp \
     src/viewers/symbol_viewer.cpp \
     src/dialogs/symbol_editor/pin_editor_dialog.cpp \
-    src/dialogs/symbol_editor/graphic_item_editor_dialog.cpp
+    src/dialogs/symbol_editor/graphic_item_editor_dialog.cpp \
+    src/tools/text_drawing_tool.cpp
 
 DISTFILES +=

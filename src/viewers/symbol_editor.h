@@ -8,6 +8,7 @@
 #include "src/tools/ellipse_drawing_tool.h"
 #include "src/tools/rect_drawing_tool.h"
 #include "src/tools/pin_drawing_tool.h"
+#include "src/tools/text_drawing_tool.h"
 
 #include "src/symbol/schematic_symbol.h"
 
@@ -24,7 +25,7 @@ public:
 
 public slots:
     //TODO these are just hacky. To be remove
-    //void drawText(void)     { startTool(&text_tool_); }
+    void drawText(void)     { startTool(&text_tool_); }
     void drawPin(void)      { startTool(&pin_tool_); }
     void drawRect(void)     { startTool(&rect_tool_); }
     void drawEllipse(void)  { startTool(&ellipse_tool_); }
@@ -45,6 +46,7 @@ protected:
     RectDrawingTool rect_tool_;
     EllipseDrawingTool ellipse_tool_;
     PinDrawingTool pin_tool_;
+    TextDrawingTool text_tool_;
 
     // Tool callbacks
     void onToolFinished(AToolBase *toolPtr);

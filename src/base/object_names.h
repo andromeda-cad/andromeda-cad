@@ -34,6 +34,8 @@ const QString DRAW_RECT = "DrawRect";
 
 const QString DRAW_PIN = "DrawPin";
 
+const QString DRAW_TEXT = "DrawText";
+
 // Primitive edit tools
 const QString EDIT_POLYLINE = "EditPolyline";
 }

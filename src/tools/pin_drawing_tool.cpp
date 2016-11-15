@@ -8,11 +8,9 @@
 
 PinDrawingTool::PinDrawingTool(QObject *parent) : AToolBase(parent)
 {
-    setObjectName(TOOL_NAME::DRAW_PIN);
+    setObjectName( TOOL_NAME::DRAW_PIN );
 
     pin_.setUndoEnabled(false);
-
-    pin_.setOpacity(0.5);
 }
 
 void PinDrawingTool::paintTool(QPainter *painter, const QRectF &rect)
@@ -35,7 +33,7 @@ void PinDrawingTool::paintTool(QPainter *painter, const QRectF &rect)
 
 void PinDrawingTool::nextAction()
 {
-    switch (toolState())
+    switch ( toolState() )
     {
     case TOOL_STATE::RESET:
     case TOOL_STATE::PIN_SET_POS:
@@ -50,7 +48,7 @@ void PinDrawingTool::nextAction()
 ASymbolPin* PinDrawingTool::getPin()
 {
     // Clone the tool pin
-    pin_.clone();
+    //pin_.clone();
     ASymbolPin *pin = pin_.clone();
 
     return pin;
@@ -58,8 +56,7 @@ ASymbolPin* PinDrawingTool::getPin()
 
 void PinDrawingTool::onToolPosChanged()
 {
-    pin_.setPos(tool_pos_);
-    emit updated();
+    pin_.setPos( tool_pos_ );
 }
 
 void PinDrawingTool::openEditor()
@@ -74,7 +71,7 @@ void PinDrawingTool::openEditor()
 
 void PinDrawingTool::onKeyEvent(QKeyEvent *event)
 {
-    if (nullptr == event) return;
+    if ( nullptr == event ) return;
 
     int mods = (int) event->modifiers();
 

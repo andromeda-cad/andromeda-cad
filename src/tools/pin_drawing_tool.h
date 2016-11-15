@@ -12,15 +12,15 @@ class PinDrawingTool : public AToolBase
 public:
     PinDrawingTool(QObject *parent = 0);
 
-    void paintTool(QPainter *painter, const QRectF &rect);
+    virtual void paintTool(QPainter *painter, const QRectF &rect) override;
 
-    void nextAction(void);
+    virtual void nextAction(void) override;
 
     ASymbolPin *getPin(void);
 
 protected:
-    virtual void onToolPosChanged(void);
-    virtual void onKeyEvent(QKeyEvent *event);
+    virtual void onToolPosChanged(void) override;
+    virtual void onKeyEvent(QKeyEvent *event) override;
 
     virtual void openEditor(void) override;
 
